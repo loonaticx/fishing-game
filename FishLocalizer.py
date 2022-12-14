@@ -97,3 +97,26 @@ FishSpeciesNames = {0: ('Balloon Fish',
                          'Strawberry PB&J Fish',
                          'Concord Grape PB&J Fish'),
                     34: ('Devil Ray',)}
+
+FishPickerTotalValue = "Bucket: %s / %s\nValue: %d jellybeans"
+
+UnknownFish = "???"
+
+FishingRod = "%s Rod"
+FishingRodNameDict = {
+    0 : "Twig",
+    1 : "Bamboo",
+    2 : "Hardwood",
+    3 : "Steel",
+    4 : "Gold",
+    }
+FishTrophyNameDict = {
+    0 : "Guppy",
+    1 : "Minnow",
+    2 : "Fish",
+    3 : "Flying Fish",
+    4 : "Shark",
+    5 : "Swordfish",
+    6 : "Killer Whale",
+    }
+

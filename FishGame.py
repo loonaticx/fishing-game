@@ -31,7 +31,7 @@ class FishGame:
         self.emptyRodDict {} # should these be moved into globals... probably tbh
         # actually maybe not for values that r subject to change like totalNumFish
         self.anywhereDict = copy.deepcopy(self.emptyRodDict)
-        for rodIndex in self.globals.rodDict:
+        for rodIndex in range(self.globals.getNumRods()):
             self.emptyRodDict[rodIndex] = {}
 
         fishDict = self.globals.getFishDict()
@@ -294,7 +294,7 @@ def generateFishingReport(numCasts=10000, hitRate=0.8):  # hitrate = fail catch?
                     if success:
                         value = getValue(genus, species, weight)
                         print("Fish: {}, Weight: {}, Value: {}".format(
-                            TTLocalizer.FishSpeciesNames[genus][species], weight, value))
+                            FishLocalizer.FishSpeciesNames[genus][species], weight, value))
                         totalPondMoney[pond] += value
                         totalRodMoney[rod] += value
                 elif itemType == JellybeanItem:

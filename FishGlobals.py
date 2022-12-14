@@ -1,5 +1,5 @@
 
-from toontown.toonbase import TTLocalizer
+from toontown.toonbase import FishLocalizer
 from math import ceil, pow
 import random
 from toontown.toonbase import ToontownGlobals
@@ -156,13 +156,13 @@ FishFileDict = {
 FISH_PER_BONUS = 10
 
 TrophyDict = {
-    0: (TTLocalizer.FishTrophyNameDict[0],),
-    1: (TTLocalizer.FishTrophyNameDict[1],),
-    2: (TTLocalizer.FishTrophyNameDict[2],),
-    3: (TTLocalizer.FishTrophyNameDict[3],),
-    4: (TTLocalizer.FishTrophyNameDict[4],),
-    5: (TTLocalizer.FishTrophyNameDict[5],),
-    6: (TTLocalizer.FishTrophyNameDict[6],),
+    0: (FishLocalizer.FishTrophyNameDict[0],),
+    1: (FishLocalizer.FishTrophyNameDict[1],),
+    2: (FishLocalizer.FishTrophyNameDict[2],),
+    3: (FishLocalizer.FishTrophyNameDict[3],),
+    4: (FishLocalizer.FishTrophyNameDict[4],),
+    5: (FishLocalizer.FishTrophyNameDict[5],),
+    6: (FishLocalizer.FishTrophyNameDict[6],),
     }
 
 # Indexes into the FishDict data
