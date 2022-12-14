@@ -5,6 +5,13 @@ import random
 from toontown.toonbase import ToontownGlobals
 import copy
 
+# string: ["name", cost, (weight and other info) ]
+NewRodDict = {
+    "twig": [20, (), ],
+    "bamboo": [20, (), ],
+
+}
+
 # Codes passed between DistributedFishingSpotAI and DistributedFishingSpot.
 
 # Movie codes

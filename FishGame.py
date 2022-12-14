@@ -4,7 +4,6 @@ import FishLocalizer
 import random
 from math import ceil, pow
 
-
 # this file should contain LOGIC but not definitions
 
 
@@ -23,12 +22,13 @@ with a list of fish (genus, species) and their effecitve rarities at that pond.
   }
 """
 
+
 class FishGame:
     def __init__(self):
         self.globals = FishGameGlobals
         self.pondInfoDict = {}
         self.totalNumFish = 0
-        self.emptyRodDict {} # should these be moved into globals... probably tbh
+        self.emptyRodDict = {}  # should these be moved into globals... probably tbh
         # actually maybe not for values that r subject to change like totalNumFish
         self.anywhereDict = copy.deepcopy(self.emptyRodDict)
         for rodIndex in range(self.globals.getNumRods()):
@@ -45,7 +45,6 @@ class FishGame:
             return 1
         else:
             return 0
-
 
     # this code initializes fish locations
     def calculateFishLocations(self, fishDict):
@@ -102,7 +101,6 @@ class FishGame:
                     fishList = rarityDict.setdefault(rarity, [])
                     fishList.extend(anywhereFishList)
 
-
     def getEffectiveRarity(self, rarity, offset):
         try:
             nerfs = base.cr.nerfsMode
@@ -116,17 +114,15 @@ class FishGame:
 
         return min(maxRarity, rarity + offset)
 
-
     def getPondDict(self, zoneId):
         print(self.pondInfoDict[zoneId])
 
     def getPondInfo(self):
-        return self.pondInfoDict # should be used for fishGameSim display
+        return self.pondInfoDict  # should be used for fishGameSim display
 
     def getRodWeightRange(self, rodIndex):
         rodProps = __rodDict[rodIndex]
         return (rodProps[ROD_WEIGHT_MIN_INDEX], rodProps[ROD_WEIGHT_MAX_INDEX])
-
 
     def __rollRarityDice(self, rodId, rNumGen):
         """
@@ -147,7 +143,6 @@ class FishGame:
             rarity = 1
         return rarity
 
-
     def getRandomWeight(self, genus, species, rodIndex=None, rNumGen=None):
         minFishWeight, maxFishWeight = getWeightRange(genus, species)
         if rodIndex is None:
@@ -166,7 +161,6 @@ class FishGame:
         randNum = (randNumA + randNumB) / 2.0
         randWeight = minWeight + (maxWeight - minWeight) * randNum
         return int(round(randWeight * 16))
-
 
     def getRandomFishVitals(self, zoneId, rodId, rNumGen=None):
         rarity = __rollRarityDice(rodId, rNumGen)
@@ -188,18 +182,19 @@ class FishGame:
         return
 
 
-
 def testRarity(rodId=0, numIter=100000):
-    d = {1: 0,
-         2: 0,
-         3: 0,
-         4: 0,
-         5: 0,
-         6: 0,
-         7: 0,
-         8: 0,
-         9: 0,
-         10: 0}
+    d = {
+        1: 0,
+        2: 0,
+        3: 0,
+        4: 0,
+        5: 0,
+        6: 0,
+        7: 0,
+        8: 0,
+        9: 0,
+        10: 0
+    }
     for i in range(numIter):
         v = __rollRarityDice(rodId)
         d[v] += 1
@@ -215,9 +210,6 @@ def getRandomFish():
     genus = random.choice(list(__fishDict.keys()))
     species = random.randint(0, len(__fishDict[genus]) - 1)
     return (genus, species)
-
-
-
 
 
 def getSimplePondInfo():
@@ -313,7 +305,8 @@ def generateFishingReport(numCasts=10000, hitRate=0.8):  # hitrate = fail catch?
         print(('pond: %s  totalMoney: %s profit: %s perCast: %s' % (pond,
                                                                     money,
                                                                     money - totalCastCost,
-                                                                    (money - totalCastCost) / float(numCasts * (MaxRodId + 1))),))
+                                                                    (money - totalCastCost) / float(
+                                                                        numCasts * (MaxRodId + 1))),))
 
     for rod, money in list(totalRodMoney.items()):
         baitCost = getCastCost(rod)
@@ -322,4 +315,5 @@ def generateFishingReport(numCasts=10000, hitRate=0.8):  # hitrate = fail catch?
                                                                                money,
                                                                                totalCastCost,
                                                                                money - totalCastCost,
-                                                                               (money - totalCastCost) / float(numCasts * numPonds)),))
+                                                                               (money - totalCastCost) / float(
+                                                                                   numCasts * numPonds)),))

@@ -1,4 +1,4 @@
-
+import FishLocalizer
 # Should not get any pond info, though listing below zones should be ok
 
 # Zones
@@ -33,11 +33,24 @@ PajamaPlace = 62
 
 OutdoorZone = 70
 
-PlaygroundZoneIDs = {10: 'Toontown Central',
-                     11: 'Punchline Place',
-                     12: 'Loopy Lane',
-                     13: 'Silly Street'
-                     }
+# These are hood ids, but they are not zone ids.
+Tutorial =             15000
+MyEstate =             16000
+
+# Minigolf hood ids
+GolfZone =             17000
+
+# Party zone hood id
+PartyHood =            18000
+
+
+#### PLAYGROUND DATA
+LocationData = {
+    1: ['Toontown Central Playground', 'gold3', ToontownCentral],
+    2: ['Punchline Place', 'gold3', PunchlinePlace],
+    3: ['Loopy Lane', 'gold3', LoopyLane],
+    4: ['Silly Street', 'gold3', SillyStreet]
+}
 
 Nothing = 0
 QuestItem = 1
@@ -89,13 +102,13 @@ RodRarityFactor = {0: 1.0 / (GlobalRarityDialBase * 1),
                    4: 1.0 / (GlobalRarityDialBase * 0.85)}
 MaxRodId = 4
 FISH_PER_BONUS = 10
-TrophyDict = {0: (TTLocalizer.FishTrophyNameDict[0],),
-              1: (TTLocalizer.FishTrophyNameDict[1],),
-              2: (TTLocalizer.FishTrophyNameDict[2],),
-              3: (TTLocalizer.FishTrophyNameDict[3],),
-              4: (TTLocalizer.FishTrophyNameDict[4],),
-              5: (TTLocalizer.FishTrophyNameDict[5],),
-              6: (TTLocalizer.FishTrophyNameDict[6],)}
+TrophyDict = {0: (FishLocalizer.FishTrophyNameDict[0],),
+              1: (FishLocalizer.FishTrophyNameDict[1],),
+              2: (FishLocalizer.FishTrophyNameDict[2],),
+              3: (FishLocalizer.FishTrophyNameDict[3],),
+              4: (FishLocalizer.FishTrophyNameDict[4],),
+              5: (FishLocalizer.FishTrophyNameDict[5],),
+              6: (FishLocalizer.FishTrophyNameDict[6],)}
 WEIGHT_MIN_INDEX = 0
 WEIGHT_MAX_INDEX = 1
 RARITY_INDEX = 2
