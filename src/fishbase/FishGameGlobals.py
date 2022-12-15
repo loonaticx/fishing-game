@@ -1,4 +1,4 @@
-import FishLocalizer
+from fishbase import FishLocalizer
 # Should not get any pond info, though listing below zones should be ok
 
 # Zones
@@ -43,6 +43,33 @@ GolfZone =             17000
 # Party zone hood id
 PartyHood =            18000
 
+DefaultBucketSize = 20
+
+from fishbase.EnumBase import *
+
+MainMenuOptions = {
+    "none": MainMenuChoice.NONE,
+    "play": MainMenuChoice.FISHING_GAME,
+    "review": MainMenuChoice.FISHING_STATS,
+    "simulate": MainMenuChoice.FISHING_AUTOSIM
+}
+
+GameMenuOptions = {
+    "back": GameMode.NONE,  # "go back"
+    "free": GameMode.FREE_PLAY,
+    "campaign": GameMode.CAMPAIGN,
+}
+
+
+FishermanMenuOptions = {
+    "back": GameMode.NONE,  # "go back"
+    "sell": GameMode.FREE_PLAY,
+    "buy": GameMode.FREE_PLAY,
+    "tutorial": GameMode.CAMPAIGN,
+}
+
+
+
 
 #### PLAYGROUND DATA
 LocationData = {
@@ -66,11 +93,7 @@ ProbabilityDict = {93: FishItem,
                    100: BootItem}
 SortedProbabilityCutoffs = list(ProbabilityDict.keys())
 SortedProbabilityCutoffs.sort()
-Rod2JellybeanDict = {0: 10,
-                     1: 20,
-                     2: 30,
-                     3: 75,
-                     4: 150}
+
 MAX_RARITY = 10
 MAX_RARITY_NERFS = 7
 GlobalRarityDialBase = 4.3
@@ -82,25 +105,7 @@ COLLECT_NO_UPDATE = 0
 COLLECT_NEW_ENTRY = 1
 COLLECT_NEW_RECORD = 2
 
-RodPriceDict = {0: 0,
-                1: 400,
-                2: 800,
-                3: 1200,
-                4: 2000}
 
-
-# This is how much each rod changes the global rarity dice rolls These get
-# multiplied into the GlobalRarityDialBase, thus making the rare fish less
-# rare.  The rarity curve is controlled by this exponent in the dict
-# below. Making that value smaller (where 1/2 = square root, 1/3 = cube
-# root, etc) will make higher rarity levels even harder to find by making
-# the curve steeper.
-RodRarityFactor = {0: 1.0 / (GlobalRarityDialBase * 1),
-                   1: 1.0 / (GlobalRarityDialBase * 0.975),
-                   2: 1.0 / (GlobalRarityDialBase * 0.95),
-                   3: 1.0 / (GlobalRarityDialBase * 0.9),
-                   4: 1.0 / (GlobalRarityDialBase * 0.85)}
-MaxRodId = 4
 FISH_PER_BONUS = 10
 TrophyDict = {0: (FishLocalizer.FishTrophyNameDict[0],),
               1: (FishLocalizer.FishTrophyNameDict[1],),
@@ -244,12 +249,14 @@ ROD_CAST_COST_INDEX = 2
 
 # Rods with their associated weight ranges
 # Rods can catch the minimum up to the maximum
-__rodDict = {0: (0, 4, 1),
-             1: (0, 8, 2),
-             2: (0, 12, 3),
-             3: (0, 16, 4),
-             4: (0, 20, 5)}
-
+__rodDict = {
+    FishingRod.TWIG_ROD: (0, 4, 1),
+    FishingRod.BAMBOO_ROD: (0, 8, 2),
+    FishingRod.HARDWOOD_ROD: (0, 12, 3),
+    FishingRod.STEEL_ROD: (0, 16, 4),
+    FishingRod.GOLD_ROD: (0, 20, 5)
+}
+rodDict = __rodDict
 def getSpecies(genus):
     return __fishDict[genus]
 
