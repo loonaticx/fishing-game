@@ -1,3 +1,18 @@
+
+CampaignQuestDialog = [
+    [
+        "You have just arrived in Toontown.\n",
+        "Being a new arrival, you only have 15 Laff Points. However, you arrived empty handed; missing your beloved Fishing Rod and Bucket.",
+        "Mayor Flippy introduces you to the neighborhood fisherman, Fisherman Freddy. He offers basic fishing supplies in exchange for Jellybeans.",
+        "Due to some Trolley Troubles, Flippy has kindly spared you a handful of Jellybeans for purchasing supplies."
+    ],  # < talk to fisherman freddy >
+    [
+        "Sorry buddy. Looks like you don't have enough Jellybeans for a fishing rod. Best I can do for ya is craft a fishing rod from twigs.",
+        "It's not the best, but it'll still get some bites. Maybe if you're lucky enough you'll catch a fish or two.",
+        "Hey- Since you're new here, would you like for me to give you a basic rundown on how to fish? Might be a good refresher for ya."
+    ]
+]
+
 FishingFailure = "You didn't catch anything!"
 FishingFailureTooSoon = "Don't start to reel in the line until you see a nibble.  Wait for your float to bob up and down rapidly!"
 FishingFailureTooLate = 'Be sure to reel in the line while the fish is still nibbling!'
@@ -102,14 +117,7 @@ FishPickerTotalValue = "Bucket: %s / %s\nValue: %d jellybeans"
 
 UnknownFish = "???"
 
-FishingRod = "%s Rod"
-FishingRodNameDict = {
-    0 : "Twig",
-    1 : "Bamboo",
-    2 : "Hardwood",
-    3 : "Steel",
-    4 : "Gold",
-    }
+
 FishTrophyNameDict = {
     0 : "Guppy",
     1 : "Minnow",
