@@ -6,34 +6,67 @@ Contains user interface for setting up the fishing simulator parameters
 
 from rich.table import Table
 from rich import print
-from rich.console import Console
+# from rich.console import Console
 from rich.prompt import Prompt
 
-from src.fishbase import FishGameGlobals
+from fishbase import FishGameGlobals
 
 # https://pythonawesome.com/a-python-library-for-rich-text-and-beautiful-formatting-in-the-terminal/
-from src.simulator.FishGameSim import FishGameSim
+from fishbase.EnumBase import MainMenuChoice, GameMode
+from fishbase.FishBase import FishBase
+from menus.MainMenu import MainMenu
+# from simulator.FishGameSim import FishGameSim
+from menus.GameSelectionMenu import GameSelectionMenu
 
 
-class RunSimulator:
-    console = Console()
+class RunSimulator(FishBase):
+    # console = Console()
 
     def __init__(self):
-        self.console.print("Welcome to [red]Loonatic's[/red] [bold blue]Fishing Game Simulator![/bold blue] v.0.1")
-        self.globals = FishGameGlobals
-        self.locationData = self.globals.LocationData
-        menuMode = self.showMenu()
-        self.console.clear()
-        gameMode = self.enterGameSelection(menuMode)
-        self.console.clear()
+        super().__init__()
 
-        # relocate
-        rod = self.setRodID()
-        self.console.clear()
-        loc = self.setLocationID()
-        num = 30
-        succ = 30
-        sim = FishGameSim(rod, loc, num, succ)
+        def selectionMainMenu():
+            self.refreshTitleScreen()
+            self.mainMenu.enterMenu()
+            if self.mainMenu.result == MainMenuChoice.FISHING_GAME:
+                # Go to the game menu
+                selectionGameType()
+            elif self.mainMenu.result == MainMenuChoice.FISHING_STATS:
+                # Check fishing statistics
+                self.gameModeMenu.enterMenu()
+            elif self.mainMenu.result == MainMenuChoice.FISHING_DEBUG:
+                # Fishing debug menu
+                self.gameModeMenu.enterMenu(True, "test")
+
+        def selectionGameType():
+            self.refreshTitleScreen()
+            self.gameModeMenu.enterMenu()
+            if self.gameModeMenu.result == GameMode.CAMPAIGN:
+                # Start campaign here
+                pass
+            elif self.gameModeMenu.result == GameMode.FREE_PLAY:
+                # Start free play here
+                pass
+            elif self.gameModeMenu.result == GameMode.NONE:
+                # go back to the beginning
+                selectionMainMenu()
+
+        selectionMainMenu()
+
+        # self.globals = FishGameGlobals
+        # self.locationData = self.globals.LocationData
+        # menuMode = self.showMenu()
+        # self.console.clear()
+        # gameMode = self.enterGameSelection(menuMode)
+        # self.console.clear()
+        #
+        # # relocate
+        # rod = self.setRodID()
+        # self.console.clear()
+        # loc = self.setLocationID()
+        # num = 30
+        # succ = 30
+        # sim = FishGameSim(rod, loc, num, succ)
         # sim.showFishOptions(self.table)  # TOO EARLY
         pass
 
