@@ -4,17 +4,15 @@ ToontownFishingSimulator Main Menu
 Contains user interface for setting up the fishing simulator parameters
 """
 
-from rich.table import Column, Table
+from rich.table import Table
 from rich import print
-from rich.panel import Panel
 from rich.console import Console
 from rich.prompt import Prompt
 
-import FishGameGlobals
-
+from src.fishbase import FishGameGlobals
 
 # https://pythonawesome.com/a-python-library-for-rich-text-and-beautiful-formatting-in-the-terminal/
-from FishGameSim import FishGameSim
+from src.simulator.FishGameSim import FishGameSim
 
 
 class RunSimulator:

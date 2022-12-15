@@ -1,6 +1,5 @@
 import copy
-import FishGameGlobals
-import FishLocalizer
+from src.fishbase import FishGameGlobals, FishLocalizer
 import random
 from math import ceil, pow
 
