@@ -1,7 +1,12 @@
 from enum import IntEnum
+# https://michaelcho.me/article/using-python-enums-in-sqlalchemy-models
 
 
-class FishContext:
+class FishContext(object):
+    # master fish.db
+    db = None
+    disid = 0
+
     _MENU_MODE: IntEnum  # show stats or play game?
     _GAME_MODE: IntEnum  # -1 if not game
     _LEVELS_UNLOCKED: int  # [0] * len(LocationData), access is LocationData Key - 1
@@ -24,6 +29,25 @@ class FishContext:
         } 
     }
     """
+
+    def _sync_db(func):
+        """
+        static method
+        """
+        def wrapper(cls, id):
+            # execute the root method
+            func(cls, id)
+
+            # post-execution operations:
+            # update database entry by inserting itself
+            if cls.db:
+                # val = eval(f'cls.{func.__name__}')  # func.__name__ returns eg MENU_MODE
+                # user = cls.db.User
+                # db.session.query(user).filter(disid).update({'context': cls}, synchronize_session = True)
+                cls.db.updateContext(cls.disid, cls)
+
+        return wrapper
+
 
     @property
     def MENU_MODE(self):
@@ -64,5 +88,8 @@ class FishContext:
     @MENU_MODE.setter
     def BUCKET_SIZE_MAX(self, id: IntEnum):
         self.BUCKET_SIZE_MAX = id
+
+    _sync_db = staticmethod(_sync_db)
+
 
 # FishContext = FishContext()
