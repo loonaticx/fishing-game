@@ -4,7 +4,8 @@ import random
 from math import ceil, pow
 
 # this file should contain LOGIC but not definitions
-
+from fishbase.FishGameGlobals import getEffectiveRarity
+from fishbase.RodInfo import *
 
 """
 pondInfoDict is a version of the fishDict, with zone as the primary key, rod as the secondary key,
@@ -99,17 +100,14 @@ class FishGame:
                     rarityDict = rodDict[rodIndex]
                     fishList = rarityDict.setdefault(rarity, [])
                     fishList.extend(anywhereFishList)
+        return fishList
 
     def getEffectiveRarity(self, rarity, offset):
-        try:
-            nerfs = base.cr.nerfsMode
-        except:
-            nerfs = config.GetBool('nerfs-mode', False)
-
+        nerfs = False
         if nerfs:
-            maxRarity = MAX_RARITY_NERFS
+            maxRarity = self.globals.MAX_RARITY_NERFS
         else:
-            maxRarity = MAX_RARITY
+            maxRarity = self.globals.MAX_RARITY
 
         return min(maxRarity, rarity + offset)
 
@@ -120,8 +118,8 @@ class FishGame:
         return self.pondInfoDict  # should be used for fishGameSim display
 
     def getRodWeightRange(self, rodIndex):
-        rodProps = __rodDict[rodIndex]
-        return (rodProps[ROD_WEIGHT_MIN_INDEX], rodProps[ROD_WEIGHT_MAX_INDEX])
+        rodProps = self.globals.rodDict[rodIndex]
+        return (rodProps[self.globals.ROD_WEIGHT_MIN_INDEX], rodProps[self.globals.ROD_WEIGHT_MAX_INDEX])
 
     def __rollRarityDice(self, rodId, rNumGen):
         """
@@ -143,12 +141,12 @@ class FishGame:
         return rarity
 
     def getRandomWeight(self, genus, species, rodIndex=None, rNumGen=None):
-        minFishWeight, maxFishWeight = getWeightRange(genus, species)
+        minFishWeight, maxFishWeight = self.globals.getWeightRange(genus, species)
         if rodIndex is None:
             minWeight = minFishWeight
             maxWeight = maxFishWeight
         else:
-            minRodWeight, maxRodWeight = getRodWeightRange(rodIndex)
+            minRodWeight, maxRodWeight = self.globals.getRodWeightRange(rodIndex)
             minWeight = max(minFishWeight, minRodWeight)
             maxWeight = min(maxFishWeight, maxRodWeight)
         if rNumGen is None:
@@ -162,8 +160,8 @@ class FishGame:
         return int(round(randWeight * 16))
 
     def getRandomFishVitals(self, zoneId, rodId, rNumGen=None):
-        rarity = __rollRarityDice(rodId, rNumGen)
-        rodDict = __pondInfoDict.get(zoneId)
+        rarity = self.__rollRarityDice(rodId, rNumGen)
+        rodDict = self.pondInfoDict.get(zoneId)
         rarityDict = rodDict.get(rodId)
         fishList = rarityDict.get(rarity)
         if fishList:
@@ -171,7 +169,7 @@ class FishGame:
                 genus, species = random.choice(fishList)
             else:
                 genus, species = rNumGen.choice(fishList)
-            weight = getRandomWeight(genus, species, rodId, rNumGen)
+            weight = self.getRandomWeight(genus, species, rodId, rNumGen)
             return (1,
                     genus,
                     species,
@@ -179,6 +177,89 @@ class FishGame:
         else:
             return (0, 0, 0, 0)
         return
+
+
+    def getSimplePondInfo(self):
+        info = {}
+        for pondId, pondInfo in list(self.pondInfoDict.items()):
+            pondFishList = []
+            for rodId, rodInfo in list(pondInfo.items()):
+                for rarity, fishList in list(rodInfo.items()):
+                    for fish in fishList:
+                        if fish not in pondFishList:
+                            pondFishList.append(fish)
+
+            pondFishList.sort()
+            info[pondId] = pondFishList
+
+        return info
+
+    def generateFishingReport(self, numCasts=10000, hitRate=0.8):  # hitrate = fail catch?
+        # THIS INCLUDES EVERY SINGLE ZONE
+        """
+        Prints out a report from a full simulation of the fishing
+        system, including boots, jellybean bonuses, and the cost of casting.
+        Shows profit per rod and per pond.
+
+        hitRate is how often the user hits a fish
+        hitRate of 1.0 means you always hit, 0.5 means half the time
+        """
+        totalPondMoney = {}
+        totalRodMoney = {}
+        totalPondBaitCost = {}
+        for pond in self.pondInfoDict:
+            totalPondMoney[pond] = 0
+            totalPondBaitCost[pond] = 0
+            for rod in range(MaxRodId + 1):
+                totalRodMoney.setdefault(rod, 0)
+                baitCost = self.globals.getCastCost(rod)
+                for cast in range(numCasts):
+                    totalPondBaitCost[pond] += baitCost
+                    if random.random() > hitRate:
+                        continue
+                    rand = random.random() * 100.0
+                    for cutoff in self.globals.SortedProbabilityCutoffs:
+                        if rand <= cutoff:
+                            itemType = self.globals.ProbabilityDict[cutoff]
+                            break
+
+                    if itemType == self.globals.FishItem:
+                        success, genus, species, weight = self.getRandomFishVitals(
+                            pond, rod)
+                        if success:
+                            value = self.globals.getValue(genus, species, weight)
+                            print("Fish: {}, Weight: {}, Value: {}".format(
+                                FishLocalizer.FishSpeciesNames[genus][species], weight, value))
+                            totalPondMoney[pond] += value
+                            totalRodMoney[rod] += value
+                    elif itemType == self.globals.JellybeanItem:
+                        value = Rod2JellybeanDict[rod]
+                        print("Jellybeans Caught: {}".format(value))
+                        totalPondMoney[pond] += value
+                        totalRodMoney[rod] += value
+
+        numPonds = len(totalPondMoney)
+        for pond, money in list(totalPondMoney.items()):
+            baitCost = 0
+            for rod in range(MaxRodId + 1):
+                baitCost += self.globals.getCastCost(rod)
+
+            totalCastCost = baitCost * numCasts
+            print(('pond: %s  totalMoney: %s profit: %s perCast: %s' % (pond,
+                                                                        money,
+                                                                        money - totalCastCost,
+                                                                        (money - totalCastCost) / float(
+                                                                            numCasts * (MaxRodId + 1))),))
+
+        for rod, money in list(totalRodMoney.items()):
+            baitCost = self.globals.getCastCost(rod)
+            totalCastCost = baitCost * (numCasts * numPonds)
+            print(('rod: %s totalMoney: %s castCost: %s profit: %s perCast: %s' % (rod,
+                                                                                   money,
+                                                                                   totalCastCost,
+                                                                                   money - totalCastCost,
+                                                                                   (money - totalCastCost) / float(
+                                                                                       numCasts * numPonds)),))
 
 
 def testRarity(rodId=0, numIter=100000):
@@ -211,20 +292,6 @@ def getRandomFish():
     return (genus, species)
 
 
-def getSimplePondInfo():
-    info = {}
-    for pondId, pondInfo in list(__pondInfoDict.items()):
-        pondFishList = []
-        for rodId, rodInfo in list(pondInfo.items()):
-            for rarity, fishList in list(rodInfo.items()):
-                for fish in fishList:
-                    if fish not in pondFishList:
-                        pondFishList.append(fish)
-
-        pondFishList.sort()
-        info[pondId] = pondFishList
-
-    return info
 
 
 def getPondGeneraList(pondId):
@@ -250,69 +317,7 @@ def printNumGeneraPerPond():
         print('Pond %s has %s Genera' % (pondId, len(generaList)))
 
 
-def generateFishingReport(numCasts=10000, hitRate=0.8):  # hitrate = fail catch?
-    # THIS INCLUDES EVERY SINGLE ZONE
-    """
-    Prints out a report from a full simulation of the fishing
-    system, including boots, jellybean bonuses, and the cost of casting.
-    Shows profit per rod and per pond.
 
-    hitRate is how often the user hits a fish
-    hitRate of 1.0 means you always hit, 0.5 means half the time
-    """
-    totalPondMoney = {}
-    totalRodMoney = {}
-    totalPondBaitCost = {}
-    for pond in __pondInfoDict:
-        totalPondMoney[pond] = 0
-        totalPondBaitCost[pond] = 0
-        for rod in range(MaxRodId + 1):
-            totalRodMoney.setdefault(rod, 0)
-            baitCost = getCastCost(rod)
-            for cast in range(numCasts):
-                totalPondBaitCost[pond] += baitCost
-                if random.random() > hitRate:
-                    continue
-                rand = random.random() * 100.0
-                for cutoff in SortedProbabilityCutoffs:
-                    if rand <= cutoff:
-                        itemType = ProbabilityDict[cutoff]
-                        break
 
-                if itemType == FishItem:
-                    success, genus, species, weight = getRandomFishVitals(
-                        pond, rod)
-                    if success:
-                        value = getValue(genus, species, weight)
-                        print("Fish: {}, Weight: {}, Value: {}".format(
-                            FishLocalizer.FishSpeciesNames[genus][species], weight, value))
-                        totalPondMoney[pond] += value
-                        totalRodMoney[rod] += value
-                elif itemType == JellybeanItem:
-                    value = Rod2JellybeanDict[rod]
-                    print("Jellybeans Caught: {}".format(value))
-                    totalPondMoney[pond] += value
-                    totalRodMoney[rod] += value
-
-    numPonds = len(totalPondMoney)
-    for pond, money in list(totalPondMoney.items()):
-        baitCost = 0
-        for rod in range(MaxRodId + 1):
-            baitCost += getCastCost(rod)
-
-        totalCastCost = baitCost * numCasts
-        print(('pond: %s  totalMoney: %s profit: %s perCast: %s' % (pond,
-                                                                    money,
-                                                                    money - totalCastCost,
-                                                                    (money - totalCastCost) / float(
-                                                                        numCasts * (MaxRodId + 1))),))
-
-    for rod, money in list(totalRodMoney.items()):
-        baitCost = getCastCost(rod)
-        totalCastCost = baitCost * (numCasts * numPonds)
-        print(('rod: %s totalMoney: %s castCost: %s profit: %s perCast: %s' % (rod,
-                                                                               money,
-                                                                               totalCastCost,
-                                                                               money - totalCastCost,
-                                                                               (money - totalCastCost) / float(
-                                                                                   numCasts * numPonds)),))
+if __name__ == "__main__":
+    pass
