@@ -1,3 +1,4 @@
+from math import ceil
 from fishbase import FishLocalizer
 # Should not get any pond info, though listing below zones should be ok
 
@@ -287,7 +288,6 @@ def getValue(genus, species, weight):
     weightValue = pow(WEIGHT_VALUE_SCALE * weight, 1.1)
     value = OVERALL_VALUE_SCALE * (rarityValue + weightValue)
     finalValue = int(ceil(value))
-    base = getBase()
     return finalValue
 
 def getFishDict():
