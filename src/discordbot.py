@@ -4,6 +4,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 from fishbase.FishContext import FishContext
+from fishbase.FishContext import FishInternal
 
 import DatabaseManager
 from fishbase.EnumBase import *
@@ -376,32 +377,46 @@ class MasterView(discord.ui.View):
         ],
     }
 
-    def __init__(self, user):
+    def __init__(self, user: discord.User):
         """
         :param user: user reserved for this interaction
         """
         super().__init__()
         self.user = user.id
-        db = DatabaseManager
-        # Originally, implementation of context was done on bot init. meaning everyones progress was shared
-        # to ensure users arent interfering with other peoples game, we must create our own context.
 
-        # Check to see if user has already been registered in database
-        self.context = (db.session.query(db.User).filter_by(disid=self.user).first())
-        if not self.context:
+        # our initial call to init and communicate with the database
+        db = DatabaseManager
+
+        # Check to see if user is registered in database
+        user_db = (db.session.query(db.User).filter_by(disid=self.user).first())
+        if not user_db:
+            # register the new user
             user = db.User(self.user, str(user))
-            self.context = user.registerFishContext(FishContext())
+            self.context = user.registerFishContext(FishContext())  # returns FishContext
             db.session.add(user)
             db.session.commit()
+            # todo, move these to a check to see if user is new to campaign
+            # since they are a new user, let's apply some default values:
+            self.context.JELLYBEANS_TOTAL = 20  # to start them off, give them 20 jellybeans.
+            # or maybe we can just give them a grace cast ^
+            self.context.BUCKET_SIZE = 20  # default bucket size
+            self.context.ROD_ID = FishingRod.TWIG_ROD  # beginner rod
+        else:
+            # nope, he's already registered with us, register the pre-existing context blob.
+            self.context = user_db.context
 
-        assert self.context
-        self.context.db = db
+        # set our db marker if haven't already, this is done upon the first command executed in the bot session
+        FishInternal.db = db
+
+        # for convenience of db updates, we give the context object a pointer to the userid.
         self.context.disid = self.user
 
+
+        # since we've modified context, might as well register the disid value into the context blob
+        db.updateContext(self.user, self.context)
+
+        # now that everything's ready to go, we can show the user their next options.
         self.main_menu()
-        self.add_item(FishingRodDropdown())
-
-
 
     def disable_buttons(self):
         for button in self.children:

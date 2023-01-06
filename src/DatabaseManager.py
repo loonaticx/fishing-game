@@ -56,7 +56,15 @@ class User(Base):
 
 
 def updateContext(disid, context):
-    update(User).where(User.disid == disid).values(context = context)
+    # print(f"updateContext = {context.db}")
+
+    # query = f"UPDATE {User} SET context={context} WHERE id={disid}"
+    # session.execute(query)
+
+    session.execute(
+        update(User).where(User.disid == disid).values(context = context)
+    )
+    # setattr(user, 'no_of_logins', User.no_of_logins + 1)
     session.commit()
 
 

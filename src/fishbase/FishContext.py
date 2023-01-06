@@ -1,10 +1,28 @@
 from enum import IntEnum
 # https://michaelcho.me/article/using-python-enums-in-sqlalchemy-models
+# TODO: SEPARATE CLIENT SIDED AND SERVER SIDED FISH CONTEXTS
+
+
+class FishInternal:
+    """
+    Shared with all users and is set from the first execution of /gofish upon bot init.
+
+    Allows selective attributes of FishContext to store their values into the server
+    """
+    # master fish.db, shared with all users
+    _db = None
+
+    @property
+    def db(self):
+        return self._db
+
+    @db.setter
+    def db(self, db):
+        self._db = db
 
 
 class FishContext(object):
-    # master fish.db
-    db = None
+    # _db = None
     disid = 0
 
     _MENU_MODE: IntEnum  # show stats or play game?
@@ -40,11 +58,11 @@ class FishContext(object):
 
             # post-execution operations:
             # update database entry by inserting itself
-            if cls.db:
+            if FishInternal.db:
                 # val = eval(f'cls.{func.__name__}')  # func.__name__ returns eg MENU_MODE
                 # user = cls.db.User
                 # db.session.query(user).filter(disid).update({'context': cls}, synchronize_session = True)
-                cls.db.updateContext(cls.disid, cls)
+                FishInternal.db.updateContext(cls.disid, cls)
 
         return wrapper
 
