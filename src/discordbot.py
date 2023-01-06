@@ -517,4 +517,59 @@ async def gofish(interaction: discord.Interaction):
     await interaction.response.send_message(embed = em, view = view, files = files)
 
 
+
+@bot.tree.command()
+async def dblookup(interaction: discord.Interaction, user: discord.User):
+    user_id = user.id
+    username = user.name
+    avatar = user.display_avatar.url
+    db = DatabaseManager
+    # Originally, implementation of context was done on bot init. meaning everyones progress was shared
+    # to ensure users arent interfering with other peoples game, we must create our own context.
+
+    # Check to see if user has already been registered in database
+    user_db = (db.session.query(db.User).filter_by(disid = user_id).first())
+    if not user_db:
+        await interaction.response.send_message(f"user {username} is not registered in db")
+        return
+
+    context = user_db.context
+
+    def getFields(context):
+        attrs = {
+            "entries": {},
+            "null": []
+        }
+        for name in dir(context):
+            if name.startswith("_"):
+                continue
+            if not hasattr(context, name):
+                # user doesnt have a value yet for such attribute
+                attrs["null"].append(name)
+                continue
+            attr = getattr(context, name)
+            # if callable(attr):
+            #     continue
+            attrs["entries"][name] = attr
+        return attrs
+
+    pretty_string = ""
+    fields = getFields(context)
+    for field in fields.keys():
+        pretty_string += f"**{field}**: {fields[field]}\n"
+
+    pretty_string_user = ""
+    fields_user = getFields(user_db)
+    for field in fields_user.keys():
+        pretty_string_user += f"**{field}**: {(entry for entry in field)}\n"
+
+
+    em = discord.Embed(
+        title = f"db info for {username}",
+        description = f"__FishContext__\n{pretty_string}\n__User__\n{pretty_string_user}",
+        color = discord.Color.from_str("#49F147"),
+    )
+    await interaction.response.send_message(embed=em)
+
+
 bot.run(config.BOT_TOKEN)
