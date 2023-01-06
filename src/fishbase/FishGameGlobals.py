@@ -1,12 +1,14 @@
 from math import ceil
 from fishbase import FishLocalizer
+from fishbase.EnumBase import *
+
 # Should not get any pond info, though listing below zones should be ok
 
 # Zones
-ToontownCentral = 10
-PunchlinePlace = 11
-LoopyLane = 12
-SillyStreet = 13
+ToontownCentral = Location.TOONTOWN_CENTRAL
+PunchlinePlace = Location.PUNCHLINE_PLACE
+LoopyLane = Location.LOOPY_LANE
+SillyStreet = Location.SILLY_STREET
 
 DonaldsDock = 20
 BarnacleBoulevard = 21
@@ -46,7 +48,6 @@ PartyHood =            18000
 
 DefaultBucketSize = 20
 
-from fishbase.EnumBase import *
 
 MainMenuOptions = {
     "none": MainMenuChoice.NONE,
@@ -121,7 +122,7 @@ RARITY_INDEX = 2
 ZONE_LIST_INDEX = 3
 Anywhere = 1
 
-
+__totalNumFish = 0
 """
 0 - Balloon
 2 - Cat
@@ -243,6 +244,8 @@ __fishDict = {
           ),
     }
 
+fishDict = __fishDict
+
 # Indexes into the FishDict data
 ROD_WEIGHT_MIN_INDEX = 0
 ROD_WEIGHT_MAX_INDEX = 1
@@ -270,6 +273,9 @@ def getNumRods():
 def getCastCost(rodId):
     return __rodDict[rodId][ROD_CAST_COST_INDEX]
 
+def getEffectiveRarity(rarity, offset):
+    return min(MAX_RARITY, rarity + (offset))
+
 def getTotalNumFish():
     return __totalNumFish # prob wanna remove this and make it a public variable instead
 
@@ -277,6 +283,13 @@ def getWeightRange(genus, species):
     fishInfo = __fishDict[genus][species]
     return (fishInfo[WEIGHT_MIN_INDEX], fishInfo[WEIGHT_MAX_INDEX])
 
+
+def getRodWeightRange(rodIndex):
+    """
+    Return the min and max weight this rod can handle.
+    """
+    rodProps = __rodDict[rodIndex]
+    return (rodProps[ROD_WEIGHT_MIN_INDEX], rodProps[ROD_WEIGHT_MAX_INDEX])
 
 def getRarity(genus, species):
     return __fishDict[genus][species][RARITY_INDEX]
@@ -292,3 +305,4 @@ def getValue(genus, species, weight):
 
 def getFishDict():
     return __fishDict
+

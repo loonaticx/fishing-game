@@ -28,13 +28,13 @@ class Location(IntEnum):
     NONE = -1
     TOONTOWN_CENTRAL = 10
     PUNCHLINE_PLACE = 11
-    LoopyLane = 12
-    SillyStreet = 13
+    LOOPY_LANE = 12
+    SILLY_STREET = 13
 
-    DonaldsDock = 20
-    BarnacleBoulevard = 21
-    SeaweedStreet = 22
-    LighthouseLane = 23
+    DONALDS_DOCK = 20
+    BARNACLE_BOULEVARD = 21
+    SEAWEED_STREET = 22
+    LIGHTHOUSE_LANE = 23
 
     DaisyGardens = 30
     ElmStreet = 31
@@ -56,6 +56,49 @@ class Location(IntEnum):
     PajamaPlace = 62
 
     OutdoorZone = 70
+
+class FishGenus(IntEnum):
+    NONE = -1
+    BALLOON_FISH = 0
+    CAT_FISH = 2
+    CLOWN_FISH = 4
+    FROZEN_FISH = 6
+    STAR_FISH = 8
+    HOLEY_MACKEREL = 10
+
+class FishSpecies(IntEnum):
+    BALLOON_FISH = 0
+    HOT_AIR_BALLOON_FISH = 1
+    WEATHER_BALLOON_FISH = 2
+    WATER_BALLOON_FISH = 3
+    RED_BALLOON_FISH = 4
+
+    CAT_FISH = 0
+    SIAMESE = 1
+    ALLEY = 2
+    TABBY = 3
+    TOM = 4
+
+    CLOWN_FISH = 0
+    SAD = 1
+    PARTY = 2
+    CIRCUS = 3
+
+    FROZEN_FISH = 0
+
+    STAR_FISH = 0
+    FIVE_STAR_FISH = 1
+    ROCK_STAR_FISH = 2
+    SHINING_STAR_FISH = 3
+    ALL_STAR_FISH = 4
+
+    HOLEY_MACKEREL = 0
+
+    DOG_FISH = 0
+    BULL_DOG_FISH = 1
+    HOT_DOG_FISH = 2
+    DALMATION_DOG_FISH = 3
+    PUPPY_DOG_FISH = 4
 
 
 class ContextStatus(IntEnum):

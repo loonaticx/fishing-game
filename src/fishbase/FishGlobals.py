@@ -1,8 +1,7 @@
 
-from toontown.toonbase import FishLocalizer
+from fishbase import FishLocalizer
 from math import ceil, pow
 import random
-from toontown.toonbase import ToontownGlobals
 import copy
 
 # string: ["name", cost, (weight and other info) ]
@@ -80,13 +79,6 @@ COLLECT_NO_UPDATE = 0
 COLLECT_NEW_ENTRY = 1
 COLLECT_NEW_RECORD = 2
 
-RodFileDict = {
-    0: 'phase_4/models/props/pole_treebranch-mod',
-    1: 'phase_4/models/props/pole_bamboo-mod',
-    2: 'phase_4/models/props/pole_wood-mod',
-    3: 'phase_4/models/props/pole_steel-mod',
-    4: 'phase_4/models/props/pole_gold-mod',
-    }
 RodPriceDict = {
     0: 0,
     1: 400,
@@ -519,7 +511,7 @@ for zone, rodDict in __pondInfoDict.items():
             fishList.extend(anywhereFishList)
 
 def getPondDict(zoneId):
-    print __pondInfoDict[zoneId]
+    print(__pondInfoDict[zoneId])
 
 def getTotalNumFish():
     return __totalNumFish
@@ -539,7 +531,7 @@ def testRarity(rodId = 0, numIter = 100000):
     for rarity, count in d.items():
         percentage = count / float(numIter) * 100
         d[rarity] = percentage
-    print d
+    print(d)
 
 def getRandomFish():
     """
@@ -588,7 +580,7 @@ def printNumGeneraPerPond():
         for fish in fishList:
             if fish[0] not in generaList:
                 generaList.append(fish[0])
-        print "Pond %s has %s Genera" % (pondId, len(generaList))
+        print("Pond %s has %s Genera" % (pondId, len(generaList)))
     
 
 def generateFishingReport(numCasts = 10000, hitRate = 0.8):

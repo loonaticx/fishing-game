@@ -116,6 +116,14 @@ class FishContext(object):
         self._BUCKET_SIZE_MAX = id
 
     @property
+    def JELLYBEANS_CURRENT(self):
+        return self._JELLYBEANS_CURRENT
+
+    @MENU_MODE.setter
+    def JELLYBEANS_CURRENT(self, id: IntEnum):
+        self._JELLYBEANS_CURRENT = id
+
+    @property
     def JELLYBEANS_TOTAL(self):
         return self._JELLYBEANS_TOTAL
 
