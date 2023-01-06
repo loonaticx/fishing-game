@@ -3,13 +3,18 @@ from typing import Optional, List
 import discord
 from discord import app_commands
 from discord.ext import commands
+
+from fishbase import RodInfo
 from fishbase.FishContext import FishContext
 from fishbase.FishContext import FishInternal
 
 import DatabaseManager
-from fishbase.EnumBase import *
+# from fishbase.EnumBase import *
+from fishbase.FishGameGlobals import getFishDict
+from fishbase.RodInfo import *
 import random
 from config import config
+from testing import fishaccess as FishSim
 
 MY_GUILD = discord.Object(id = config.BOT_GUILD)  # replace with your guild id
 
@@ -515,6 +520,52 @@ async def gofish(interaction: discord.Interaction):
 
     view = MasterView(user = interaction.user)
     await interaction.response.send_message(embed = em, view = view, files = files)
+
+
+async def rods_autocomplete(interaction: discord.Interaction, current: str) -> List[app_commands.Choice[str]]:
+    options = rodEnums
+    for entry in options:
+        print(entry)
+    return [
+        app_commands.Choice(name = str(entry), value = str(entry))
+        for entry in options
+    ]
+
+@bot.tree.command()
+# idk why this isnt working rn:
+# @app_commands.autocomplete(
+#     rod_id = rods_autocomplete
+# )
+async def hypercast(interaction: discord.Interaction, rod_id:FishingRod, num_iter:int):
+    num_iter = abs(num_iter)
+    if num_iter > 50000:
+        await interaction.response.send_message(content = "Sorry, I don't want to process that many iterations. (max 50000)", ephemeral=True)
+        return
+    sim = FishSim.testRarity(rod_id, num_iter)
+    desc = f"Generated rarity report for {num_iter} casts:\n"
+    for entry in sim.keys():
+        desc += f"{entry}: {sim[entry]:.2f}%\n"
+    await interaction.response.send_message(content = desc)
+
+@bot.command()
+async def megacast(ctx:commands.Context, num_casts: int = 1, hit_rate:float=0.8):
+    num_casts = abs(num_casts)
+    hit_rate = abs(hit_rate)
+    desc = ""
+    if hit_rate > 1:
+        await ctx.send( "hit rate must be between 0 and 1")
+        return
+    if num_casts > 1:
+        await ctx.send("Sorry, I don't want to process that many iterations. (max 1)")
+        return
+    pondData, rodData = FishSim.generateFishingReport(num_casts, hit_rate)
+    for entry in rodData:
+        desc += f"{entry}\n"
+    # desc = f"pond data\n{pondData}\n\nrod data\n{rodData}"
+    # desc = f"Generated rarity report for {num_iter} casts:\n"
+    # for entry in sim.keys():
+    #     desc += f"{entry}: {sim[entry]:.2f}%\n"
+    await ctx.send(desc)
 
 
 
