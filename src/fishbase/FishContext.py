@@ -95,7 +95,8 @@ class FishContext(object):
     def ROD_ID(self):
         return self._ROD_ID
 
-    @MENU_MODE.setter
+    @ROD_ID.setter
+    @_sync_db
     def ROD_ID(self, id: IntEnum):
         self._ROD_ID = id
 
