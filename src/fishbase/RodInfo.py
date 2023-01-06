@@ -48,11 +48,26 @@ rodDict = {
     FishingRod.GOLD_ROD: (0, 20, 5)
 }
 
-FishingRod = "%s Rod"
+FishingRodName = "%s Rod"
 FishingRodNameDict = {
-    0: "Twig",
-    1: "Bamboo",
-    2: "Hardwood",
-    3: "Steel",
-    4: "Gold",
+    FishingRod.TWIG_ROD: "Twig",
+    FishingRod.BAMBOO_ROD: "Bamboo",
+    FishingRod.HARDWOOD_ROD: "Hardwood",
+    FishingRod.STEEL_ROD: "Steel",
+    FishingRod.GOLD_ROD: "Gold",
 }
+id2Enum = {
+    0: FishingRod.TWIG_ROD,
+    1: FishingRod.BAMBOO_ROD,
+    2: FishingRod.HARDWOOD_ROD,
+    3: FishingRod.STEEL_ROD,
+    4: FishingRod.GOLD_ROD
+}
+
+rodEnums = [
+    FishingRod.TWIG_ROD,
+    FishingRod.BAMBOO_ROD,
+    FishingRod.HARDWOOD_ROD,
+    FishingRod.STEEL_ROD,
+    FishingRod.GOLD_ROD
+]
