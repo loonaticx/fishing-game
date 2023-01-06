@@ -65,19 +65,17 @@ class MainMenuButton(discord.ui.Button['MasterView']):
         files = []
 
         if view.context.GAME_MODE == GameMode.CAMPAIGN:
+            # first time dialogue:
+            intro = """
+            In this mode, you must work your way up to the top, unlocking rods and playgrounds as you progress.
+            """
             em = discord.Embed(
-                title = "Select Starting Playground",
-                description = str(f"gm = {view.context.GAME_MODE} - intended {GameMode.CAMPAIGN}"),
+                title = "Welcome to campaign mode!",
+                description = str(f"{intro}"),
             )
             em.add_field(name = "Toontown Central", value = f"12 out of 39")
-            em.add_field(name = "Donalds Dock", value = f"12 out of 32")
-            em.add_field(name = "Daisy Gardens", value = f"12 out of 23")
-            em.add_field(name = "Minnies Melodyland", value = f"9 out of 10")
-            em.add_field(name = "The Brrrgh", value = f"12 out of 18")
-            em.add_field(name = "Donalds Dreamland", value = f"20 out of 29")
-            em.add_field(name = "Acorn Acres", value = f"9 out of 13")
-            em.add_field(name = "The Estate", value = f"10 out of 18")
-            em.add_field(name = "Total Species", value = f"57 out of 60")
+            em.add_field(name = "Total Species", value = f"0 out of 60")
+            em.set_author(name="Campaign")
 
             view.location_options(Location.NONE)
         elif view.context.GAME_MODE == GameMode.FREE_PLAY:
@@ -105,6 +103,33 @@ class MainMenuButton(discord.ui.Button['MasterView']):
             view.location_options(Location.TOONTOWN_CENTRAL)
 
         await interaction.response.edit_message(embed = em, view = view, attachments=files)
+
+
+# relevant to campaign mode
+class TutorialButton(discord.ui.Button['MasterView']):
+    def __init__(self, label, style = discord.ButtonStyle.green):
+        super().__init__(style = style, label = label)
+
+    async def callback(self, interaction: discord.Interaction):
+        # the function that edits the message
+        assert self.view is not None
+        view: MasterView = self.view
+        if not view.is_host(interaction.user.id):
+            await interaction.response.send_message("Sorry, this is not your game.", ephemeral = True)
+            return
+
+        view.clear_items()
+
+        em = discord.Embed(
+            title = "Fisherman Freddy",
+            description = f"Why hello there, Toon! Flippy told me that you're the new FisherToon in town.",
+        )
+        # can colorize these based off rarity
+        em.add_field(name="Total Jellybeans",value=view.context.JELLYBEANS_TOTAL)
+        em.set_author(name="Campaign - Tutorial")
+        view.fisherman_options()
+        # remove empty attachment list later
+        await interaction.response.edit_message(embed = em, view = view, attachments = [])
 
 
 class FishHereButton(discord.ui.Button['MasterView']):
@@ -536,7 +561,7 @@ class MasterView(discord.ui.View):
         return self.user == user
 
     def main_menu(self):
-        self.add_item(MainMenuButton(GameMode.CAMPAIGN, label = "Campaign"))
+        # self.add_item(MainMenuButton(GameMode.CAMPAIGN, label = "Campaign"))
         self.add_item(MainMenuButton(GameMode.FREE_PLAY, label = "Free Play"))
 
     def location_options(self, location):
@@ -550,6 +575,12 @@ class MasterView(discord.ui.View):
         places = self.LocationButtons.get(location)
         for place in places:
             self.add_item(place)
+
+    def campaign_options(self, campaign_context):
+        tutorial = True
+        if tutorial:
+            pass
+        pass
 
     def fish_options(self):
         self.add_item(FishButton())
