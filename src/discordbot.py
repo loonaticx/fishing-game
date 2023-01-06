@@ -155,10 +155,10 @@ class FishHereButton(discord.ui.Button['MasterView']):
         )
 
         em.add_field(name = "Fishing Bucket", value = f"{4}/20")
-        em.add_field(name = "Total Jellybeans", value = f"{69}")
+        em.add_field(name = "Total Jellybeans", value = f"{view.context.JELLYBEANS_TOTAL}")
         em.add_field(name = "Fish Bingo?", value = f"No")
 
-        em.set_footer(text = f"Selected Rod: Blah | Current Location: Silly Street")
+        em.set_footer(text = f"Selected Rod: {FishingRodNameDict[view.context.ROD_ID]} | Current Location: {view.context.LOCATION_ID}")
 
         randomfish = f"fish_{random.randint(1, 5)}.png"
         thumbnail = discord.File(f"img/{randomfish}", filename = randomfish)
@@ -182,27 +182,67 @@ class FishButton(discord.ui.Button['MasterView']):
 
         view.clear_items()
         # ok, user has pressed the button. let's do some calculations.
-        fish = "Circus Clown Fish"
+        zoneId = view.context.LOCATION_ID
+        rodId = view.context.ROD_ID
+        _, genus, species, weight = FishSim.getRandomFishVitals(zoneId, rodId)
+        # todo: check to see if old boot was caught
+        view.context.CAUGHT_FISH_SESSION += 1
+        caughtFish = FishSim.FishSpeciesNames[genus][species]
+        fishValue = FishSim.getValue(genus, species, weight)
 
-        image = discord.File("img/clownfish.gif", filename = "clownfish.gif")
+        profit = fishValue - RodInfo.rodDict[view.context.ROD_ID][2]
+        view.context.JELLYBEANS_TOTAL += profit  # Lazy shortcut so that we dont need to call the db twice for casting
+
+        rarity = FishSim.fishdict[genus][species][2]
+        if rarity in range(1, 3):
+            # common
+            rarity_desc = "Common"
+            color = "#6FE258"
+        elif rarity in range(3, 6):
+            # uncommon
+            rarity_desc = "Uncommon"
+            color = "#58AAE2"
+        elif rarity in range(6, 8):
+            # rare
+            rarity_desc = "Rare"
+            color = "#EC3A31"
+        elif rarity in range(8, 10):
+            # ultra rare
+            rarity_desc = "Ultra Rare"
+            color = "#EBF425"
+        else:
+            # unknown
+            rarity_desc = ""
+            color = "#9C9C9C"
+
+        # if new species
+        if False:
+            color = "#338DFF"
+
+        border = discord.Color.from_str(color)
 
         new = "\n**NEW SPECIES!**"
         record = "\n**NEW RECORD!**"
-        border = discord.Color.from_str("#338DFF")  # if new species
+
+        image = discord.File(f"img/tt_fish_{genus}.gif", filename = f"tt_fish_{genus}.gif")
+
+
         em = discord.Embed(
-            title = f"Caught: {fish}",
+            title = f"Caught: {caughtFish}",
             description = str(f"{new}"),
             color = border
         )
-        em.add_field(name = "Rarity", value = f"13.03% (Rare)")
-        em.add_field(name = "Weight", value = f"5.4 oz (Highest: 5.8 oz)")
+        em.add_field(name = "Rarity", value = f"{rarity}/10 ({rarity_desc})")
+        em.add_field(name = "Weight", value = f"{weight} oz (Highest: 5.8 oz)")
 
         em.add_field(name = "Fishing Bucket", value = f"{4}/20")
-        em.add_field(name = "Jellybean Amount", value = f"{12}")
-        em.add_field(name = "Total Jellybeans", value = f"{69}")
+        em.add_field(name = "Jellybean Amount", value = f"{fishValue}")
+        em.add_field(name = "Total Jellybeans", value = f"{view.context.JELLYBEANS_TOTAL} ({profit})")  # + or - if profit
 
-        em.set_footer(text = f"Selected Rod: Blah | Current Location: Silly Street")
-        em.set_image(url = "attachment://clownfish.gif")
+
+        em.set_footer(text = f"Selected Rod: {FishingRodNameDict[view.context.ROD_ID]} | Current Location: {view.context.LOCATION_ID}"
+                             f" | Fish Caught in Session: {view.context.CAUGHT_FISH_SESSION}")
+        em.set_image(url = f"attachment://tt_fish_{genus}.gif")
 
         randomfish = f"fish_{random.randint(1, 5)}.png"
         thumbnail = discord.File(f"img/{randomfish}", filename = randomfish)
@@ -225,6 +265,7 @@ class VisitFishermanButton(discord.ui.Button['MasterView']):
             return
 
         view.clear_items()
+        image = discord.File(f"img/npc_freddy.png", filename = f"npc_freddy.png")
 
         em = discord.Embed(
             title = "FISHERMAN FREDDY",
@@ -233,9 +274,10 @@ class VisitFishermanButton(discord.ui.Button['MasterView']):
         # can colorize these based off rarity
         report = "Clown Fish\nPuppy Dog Fish\nPool Shark\nPeanut Butter & Jellyfish\nNurse Shark\nHoley Mackerel\nDevil Ray"
         em.add_field(name="Fishing Bucket",value=report)
-        view.fish_options()
+        em.set_thumbnail(url="attachment://npc_freddy.png")
+        view.fisherman_options()
         # remove empty attachment list later
-        await interaction.response.edit_message(embed = em, view = view, attachments = [])
+        await interaction.response.edit_message(embed = em, view = view, attachments = [image])
 
 
 class ShopButton(discord.ui.Button['MasterView']):
@@ -259,6 +301,7 @@ class ShopButton(discord.ui.Button['MasterView']):
         view.shop_options()
         # remove empty attachment list later
         await interaction.response.edit_message(embed = em, view = view, attachments = [])
+
 
 class UpgradeButton(discord.ui.Button['MasterView']):
     def __init__(self, label, style = discord.ButtonStyle.green):
@@ -372,7 +415,7 @@ class LocationButton(discord.ui.Button['MasterView']):
                 title = "stupid playground",
                 description = str(f"gm = {view.context.GAME_MODE} - intended {GameMode.CAMPAIGN}"),
             )
-
+        em.add_field(name="Possible Fish", value=FishSim.getPondGeneraList(view.context.LOCATION_ID))
         view.location_options(view.context.LOCATION_ID)
         await interaction.response.edit_message(embed = em, view = view, attachments=files)
 
@@ -546,6 +589,10 @@ class MasterView(discord.ui.View):
         # for convenience of db updates, we give the context object a pointer to the userid.
         self.context.disid = self.user
 
+        # let's ensure that session-based values are their default values:
+        self.context.CAUGHT_FISH_SESSION = 0
+        if not hasattr(self.context, "JELLYBEANS_TOTAL"):
+            self.context.JELLYBEANS_TOTAL = 20
 
         # since we've modified context, might as well register the disid value into the context blob
         db.updateContext(self.user, self.context)
@@ -588,15 +635,23 @@ class MasterView(discord.ui.View):
         # if state changed, don't show fisherman button
         self.add_item(VisitFishermanButton(label = "See Fisherman"))
 
+        # temp back button
+        self.add_item(LocationButton(self.context.LOCATION_ID, label="Go Back"))
+
     def fisherman_options(self):
-        # only here to prevent a softlock
+        # only here to prevent a softlock, needs to be a back button instead
         self.add_item(FishButton())
         # self.add_item(FishingRodDropdown())
 
-        self.add_item(ShopButton(label = "Go Shopping"))
+        # todo: disable go shopping in free play
+        # self.add_item(ShopButton(label = "Go Shopping"))
         # check stats, inventory to change equipped rod
         self.add_item(InventoryButton(label = "Access Inventory"))
 
+    def inventory_options(self):
+        # temp until we have a back button
+        self.add_item(VisitFishermanButton(label = "Back to Fisherman"))
+        self.add_item(FishingRodDropdown())
 
     def shop_options(self):
         self.add_item(VisitFishermanButton(label = "See Fisherman"))
