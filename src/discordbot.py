@@ -257,6 +257,40 @@ class UpgradeButton(discord.ui.Button['MasterView']):
         # remove empty attachment list later
         await interaction.response.edit_message(embed = em, view = view, attachments = [])
 
+
+class InventoryButton(discord.ui.Button['MasterView']):
+    def __init__(self, label, style = discord.ButtonStyle.green):
+        super().__init__(style = style, label = label)
+
+    async def callback(self, interaction: discord.Interaction):
+        # the function that edits the message
+        assert self.view is not None
+        view: MasterView = self.view
+        if not view.is_host(interaction.user.id):
+            await interaction.response.send_message("Sorry, this is not your game.", ephemeral = True)
+            return
+
+        view.clear_items()
+
+        em = discord.Embed(
+            title = "Fishing Inventory",
+            description = f"Equipped Rod: **{FishingRodNameDict[view.context.ROD_ID]}**",
+        )
+        # {:.2f
+        chance = (((1 / RodRarityFactor[view.context.ROD_ID]) / GlobalRarityDialBase) * 100)
+        em.add_field(name="Rod Rarity Chance", value=f"+{abs((chance - 100)):.2f}%")
+        em.add_field(name="Rod Price (Jellybeans)", value=RodPriceDict[view.context.ROD_ID])
+
+        rodinfo = rodDict[view.context.ROD_ID]
+        em.add_field(name="Fish Weight", value=f"Min: {rodinfo[0]}\nMax: {rodinfo[1]}")
+        em.add_field(name="Rod Cast Cost", value=rodinfo[2])
+
+
+        view.inventory_options()
+        # remove empty attachment list later
+        await interaction.response.edit_message(embed = em, view = view, attachments = [])
+
+
 class BackButton(discord.ui.Button['MasterView']):
     def __init__(self, label = "Go Back", style = discord.ButtonStyle.gray):
         super().__init__(style = style, label = label)
@@ -530,7 +564,7 @@ class MasterView(discord.ui.View):
 
         self.add_item(ShopButton(label = "Go Shopping"))
         # check stats, inventory to change equipped rod
-        self.add_item(FishingRodDropdown())
+        self.add_item(InventoryButton(label = "Access Inventory"))
 
 
     def shop_options(self):
