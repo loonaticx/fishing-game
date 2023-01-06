@@ -25,6 +25,11 @@ class FishContext(object):
     # _db = None
     disid = 0
 
+    _CAUGHT_FISH_SESSION: int = 0  # should always be 0 in beginning of the session
+    _IN_TUTORIAL: int = False
+    _TUTORIAL_DIALOGUE_ID: int = 0
+    _NEW_PLAYER: int = True
+
     _MENU_MODE: IntEnum  # show stats or play game?
     _GAME_MODE: IntEnum  # -1 if not game
     _LEVELS_UNLOCKED: int  # [0] * len(LocationData), access is LocationData Key - 1
@@ -79,7 +84,8 @@ class FishContext(object):
     def GAME_MODE(self):
         return self._GAME_MODE
 
-    @MENU_MODE.setter
+    @GAME_MODE.setter
+    @_sync_db
     def GAME_MODE(self, id: IntEnum):
         self._GAME_MODE = id
 
@@ -87,7 +93,7 @@ class FishContext(object):
     def LOCATION_ID(self):
         return self._LOCATION_ID
 
-    @MENU_MODE.setter
+    @LOCATION_ID.setter
     def LOCATION_ID(self, id: IntEnum):
         self._LOCATION_ID = id
 
@@ -102,11 +108,37 @@ class FishContext(object):
 
     @property
     def BUCKET_SIZE_MAX(self):
-        return self.BUCKET_SIZE_MAX
+        return self._BUCKET_SIZE_MAX
 
-    @MENU_MODE.setter
+    @BUCKET_SIZE_MAX.setter
+    @_sync_db
     def BUCKET_SIZE_MAX(self, id: IntEnum):
-        self.BUCKET_SIZE_MAX = id
+        self._BUCKET_SIZE_MAX = id
+
+    @property
+    def JELLYBEANS_TOTAL(self):
+        return self._JELLYBEANS_TOTAL
+
+    @JELLYBEANS_TOTAL.setter
+    @_sync_db
+    def JELLYBEANS_TOTAL(self, amt:int):
+        self._JELLYBEANS_TOTAL = amt
+
+    @property
+    def CAUGHT_FISH_SESSION(self):
+        return self._CAUGHT_FISH_SESSION
+
+    @CAUGHT_FISH_SESSION.setter
+    def CAUGHT_FISH_SESSION(self, id: int):
+        self._CAUGHT_FISH_SESSION = id
+
+    @property
+    def TUTORIAL_DIALOGUE_ID(self):
+        return self._TUTORIAL_DIALOGUE_ID
+
+    @TUTORIAL_DIALOGUE_ID.setter
+    def TUTORIAL_DIALOGUE_ID(self, id: int):
+        self._TUTORIAL_DIALOGUE_ID = id
 
     _sync_db = staticmethod(_sync_db)
 
