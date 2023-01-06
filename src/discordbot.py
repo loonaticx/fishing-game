@@ -317,18 +317,17 @@ class LocationButton(discord.ui.Button['MasterView']):
         view.location_options(view.context.LOCATION_ID)
         await interaction.response.edit_message(embed = em, view = view, attachments=files)
 
+
 class FishingRodDropdown(discord.ui.Select['MasterView']):
     def __init__(self):
         # in campaign mode we can modify options to show only acquired rods
 
         # Set the options that will be presented inside the dropdown
-        options = [
-            discord.SelectOption(label='Twig Rod', description='Cast: 1 Jellybean', emoji='🟥'),
-            discord.SelectOption(label='Bamboo Rod', description='Your favourite colour is green', emoji='🟩'),
-            discord.SelectOption(label='Hardwood Rod', description='Your favourite colour is blue', emoji='🟦'),
-            discord.SelectOption(label = 'Steel Rod', description = 'Your favourite colour is blue', emoji = '🟦'),
-            discord.SelectOption(label = 'Gold Rod', description = 'Your favourite colour is blue', emoji = '🟦'),
-        ]
+        options = []
+        for rod in FishingRodNameDict.keys():
+            options.append(
+                discord.SelectOption(label=FishingRodName % FishingRodNameDict[rod], value=rod, description='Cast: 1 Jellybean', emoji='🟥'),
+            )
 
         # The placeholder is what will be shown when no option is chosen
         # The min and max values indicate we can only pick one of the three options
@@ -346,11 +345,83 @@ class FishingRodDropdown(discord.ui.Select['MasterView']):
         if not view.is_host(interaction.user.id):
             await interaction.response.send_message("Sorry, this is not your game.", ephemeral = True)
             return
+        view.clear_items()
 
-        # view.clear_items()
-        # todo: equip rod
-        await interaction.response.edit_message(f'Your favourite colour is {self.values[0]}', view=view)
+        # Equip our rod by registering it with our FishContext blob.
+        self.view.context.ROD_ID = id2Enum[int(self.values[0])]
 
+        em = discord.Embed(
+            title = "Fishing Inventory",
+            description = f"Equipped Rod: **{FishingRodNameDict[view.context.ROD_ID]}**",
+        )
+        # (1 / i) / r
+        chance = (((1 / RodRarityFactor[view.context.ROD_ID]) / GlobalRarityDialBase) * 100)
+
+        em.add_field(name="Rod Rarity Chance", value=f"+{abs((chance - 100)):.2f}%")
+        em.add_field(name="Rod Price", value=RodPriceDict[view.context.ROD_ID])
+
+        rodinfo = rodDict[view.context.ROD_ID]
+        em.add_field(name="Fish Weight", value=f"Min: {rodinfo[0]}, Max: {rodinfo[1]}")
+        em.add_field(name="Rod Cast Cost", value=rodinfo[2])
+        em.add_field(name="Fish Caught w/ Rod", value=str(0))
+
+
+        view.inventory_options()
+        # Re-load the inventory view to show our changes.
+        await interaction.response.edit_message(view=view, embed=em)
+
+
+class FishListDropdown(discord.ui.Select['MasterView']):
+    def __init__(self):
+        # in campaign mode we can modify options to show only acquired rods
+
+        # Set the options that will be presented inside the dropdown
+        options = []
+        for rod in FishingRodNameDict.keys():
+            options.append(
+                discord.SelectOption(label=FishingRodName % FishingRodNameDict[rod], value=rod, description='Cast: 1 Jellybean', emoji='🟥'),
+            )
+
+        # The placeholder is what will be shown when no option is chosen
+        # The min and max values indicate we can only pick one of the three options
+        # The options parameter defines the dropdown options. We defined this above
+        super().__init__(placeholder='Select your fishing rod.', min_values=1, max_values=1, options=options)
+
+    async def callback(self, interaction: discord.Interaction):
+        # Use the interaction object to send a response message containing
+        # the user's favourite colour or choice. The self object refers to the
+        # Select object, and the values attribute gets a list of the user's
+        # selected options. We only want the first one.
+
+        assert self.view is not None
+        view: MasterView = self.view
+        if not view.is_host(interaction.user.id):
+            await interaction.response.send_message("Sorry, this is not your game.", ephemeral = True)
+            return
+        view.clear_items()
+
+        # Equip our rod by registering it with our FishContext blob.
+        self.view.context.ROD_ID = id2Enum[int(self.values[0])]
+
+        em = discord.Embed(
+            title = "Fishing Inventory",
+            description = f"Equipped Rod: **{FishingRodNameDict[view.context.ROD_ID]}**",
+        )
+        # (1 / i) / r
+        chance = (((1 / RodRarityFactor[view.context.ROD_ID]) / GlobalRarityDialBase) * 100)
+
+        em.add_field(name="Rod Rarity Chance", value=f"+{abs((chance - 100)):.2f}%")
+        em.add_field(name="Rod Price", value=RodPriceDict[view.context.ROD_ID])
+
+        rodinfo = rodDict[view.context.ROD_ID]
+        em.add_field(name="Fish Weight", value=f"Min: {rodinfo[0]}, Max: {rodinfo[1]}")
+        em.add_field(name="Rod Cast Cost", value=rodinfo[2])
+        em.add_field(name="Fish Caught", value=str(3243))
+
+
+        view.inventory_options()
+        # Re-load the inventory view to show our changes.
+        await interaction.response.edit_message(view=view, embed=em)
 
 
 class MasterView(discord.ui.View):
