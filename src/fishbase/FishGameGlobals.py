@@ -39,7 +39,7 @@ OutdoorZone = 70
 
 # These are hood ids, but they are not zone ids.
 Tutorial =             15000
-MyEstate =             16000
+MyEstate =             80
 
 # Minigolf hood ids
 GolfZone =             17000
