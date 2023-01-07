@@ -1,4 +1,5 @@
 from math import ceil
+
 from fishbase import FishLocalizer
 from fishbase.EnumBase import *
 
@@ -75,10 +76,10 @@ FishermanMenuOptions = {
 
 #### PLAYGROUND DATA
 LocationData = {
-    1: ['Toontown Central Playground', 'gold3', ToontownCentral],
-    2: ['Punchline Place', 'gold3', PunchlinePlace],
-    3: ['Loopy Lane', 'gold3', LoopyLane],
-    4: ['Silly Street', 'gold3', SillyStreet]
+    1: ['Toontown Central Playground', ToontownCentral],
+    2: ['Punchline Place', PunchlinePlace],
+    3: ['Loopy Lane', LoopyLane],
+    4: ['Silly Street', SillyStreet]
 }
 
 Nothing = 0
@@ -306,3 +307,12 @@ def getValue(genus, species, weight):
 def getFishDict():
     return __fishDict
 
+HoodHierarchy = {
+    ToontownCentral : (SillyStreet, LoopyLane, PunchlinePlace),
+    DonaldsDock : (BarnacleBoulevard, SeaweedStreet, LighthouseLane),
+    TheBrrrgh : (WalrusWay, SleetStreet, PolarPlace),
+    MinniesMelodyland : (AltoAvenue, BaritoneBoulevard, TenorTerrace),
+    DaisyGardens : (ElmStreet, MapleStreet, OakStreet),
+    DonaldsDreamland : (LullabyLane, PajamaPlace),
+    # GoofySpeedway : (),
+    }
