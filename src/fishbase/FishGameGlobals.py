@@ -72,8 +72,6 @@ FishermanMenuOptions = {
 }
 
 
-
-
 #### PLAYGROUND DATA
 LocationData = {
     1: ['Toontown Central Playground', ToontownCentral],
@@ -151,99 +149,116 @@ __totalNumFish = 0
 # SPECIES_LIST is a list of SPECIES
 # Each SPECIES defines properties: (WEIGHT_MIN, WEIGHT_MAX, RARITY, ZONE_LIST)
 __fishDict = {
-    0: ( ( 1, 3, 1, (Anywhere, ) ), # Balloon Fish
-         ( 1, 1, 4, (ToontownCentral, Anywhere) ), # Hot Air Balloon Fish
-         ( 3, 5, 5, (PunchlinePlace, TheBrrrgh) ), # Weather Balloon Fish
-         ( 3, 5, 3, (SillyStreet, DaisyGardens) ), # Water Balloon Fish
-         ( 1, 5, 2, (LoopyLane, ToontownCentral) ), # Red Balloon Fish
-         ),
-    2: ( ( 2, 6, 1, (DaisyGardens, Anywhere) ), # Cat Fish
-         ( 2, 6, 9, (ElmStreet, DaisyGardens) ), # Siamese Cat Fish
-         ( 5, 11, 4, (LullabyLane, ) ), # Alley Cat Fish
-         ( 2, 6, 3, (DaisyGardens, MyEstate) ), # Tabby Cat Fish
-         ( 5, 11, 2, (DonaldsDreamland, MyEstate) ), # Tom Cat Fish
-         ),
-    4: ( ( 2, 8, 1, (ToontownCentral, Anywhere) ), # Clown Fish
-         ( 2, 8, 4, (ToontownCentral, Anywhere) ), # Sad Clown Fish
-         ( 2, 8, 2, (ToontownCentral, Anywhere) ), # Party Clown Fish
-         ( 2, 8, 6, (ToontownCentral, MinniesMelodyland) ), # Circus Clown Fish
-         ),
-    6: ( ( 8, 12, 1, (TheBrrrgh, ) ), # Frozen Fish
-         ),
-    8: ( ( 1, 5, 1, (Anywhere, ) ), # Star Fish
-         ( 2, 6, 2, (MinniesMelodyland, Anywhere) ), # Five Star Fish
-         ( 5, 10, 5, (MinniesMelodyland, Anywhere) ), # Rock Star Fish
-         ( 1, 5, 7, (MyEstate, Anywhere) ), # Shining Star Fish
-         ( 1, 5, 10, (MyEstate, Anywhere) ), # All Star Fish
-         ),
-    10: ( ( 6, 10, 9, (MyEstate, Anywhere) ), # Holey Mackerel
-          ),
-    12: ( ( 7, 15, 1, (DonaldsDock, Anywhere) ), # Dog Fish
-          ( 18, 20, 6, (DonaldsDock, MyEstate) ), # Bull Dog Fish
-          ( 1, 5, 5, (DonaldsDock, MyEstate) ), # Hot Dog Fish
-          ( 3, 7, 4, (DonaldsDock, MyEstate) ), # Dalmation Dog Fish
-          ( 1, 2, 2, (DonaldsDock, Anywhere) ), # Puppy Dog Fish
-          ),
-    14: ( ( 2, 6, 1, (DaisyGardens, MyEstate, Anywhere) ), # Amore Eel
-          ( 2, 6, 3, (DaisyGardens, MyEstate) ), # Electric Amore Eel
-          ),
-    16: ( ( 4, 12, 5, (MinniesMelodyland, Anywhere) ), # Nurse Shark
-          ( 4, 12, 7, (BaritoneBoulevard, MinniesMelodyland) ), # Clara Nurse Shark
-          ( 4, 12, 8, (TenorTerrace, MinniesMelodyland) ), # Florence Nurse Shark
-          ),
+    FishGenus.BALLOON_FISH: (
+        (1, 3, 1, (Anywhere,)),  # Balloon Fish
+        (1, 1, 4, (ToontownCentral, Anywhere)),  # Hot Air Balloon Fish
+        (3, 5, 5, (PunchlinePlace, TheBrrrgh)),  # Weather Balloon Fish
+        (3, 5, 3, (SillyStreet, DaisyGardens)),  # Water Balloon Fish
+        (1, 5, 2, (LoopyLane, ToontownCentral)),  # Red Balloon Fish
+    ),
+    FishGenus.CAT_FISH: (
+        (2, 6, 1, (DaisyGardens, Anywhere)),  # Cat Fish
+        (2, 6, 9, (ElmStreet, DaisyGardens)),  # Siamese Cat Fish
+        (5, 11, 4, (LullabyLane,)),  # Alley Cat Fish
+        (2, 6, 3, (DaisyGardens, MyEstate)),  # Tabby Cat Fish
+        (5, 11, 2, (DonaldsDreamland, MyEstate)),  # Tom Cat Fish
+    ),
+    FishGenus.CLOWN_FISH: (
+        (2, 8, 1, (ToontownCentral, Anywhere)),  # Clown Fish
+        (2, 8, 4, (ToontownCentral, Anywhere)),  # Sad Clown Fish
+        (2, 8, 2, (ToontownCentral, Anywhere)),  # Party Clown Fish
+        (2, 8, 6, (ToontownCentral, MinniesMelodyland)),  # Circus Clown Fish
+    ),
+    FishGenus.FROZEN_FISH: (
+        (8, 12, 1, (TheBrrrgh,)),  # Frozen Fish
+    ),
+    FishGenus.STAR_FISH: (
+        (1, 5, 1, (Anywhere,)),  # Star Fish
+        (2, 6, 2, (MinniesMelodyland, Anywhere)),  # Five Star Fish
+        (5, 10, 5, (MinniesMelodyland, Anywhere)),  # Rock Star Fish
+        (1, 5, 7, (MyEstate, Anywhere)),  # Shining Star Fish
+        (1, 5, 10, (MyEstate, Anywhere)),  # All Star Fish
+    ),
+    FishGenus.HOLEY_MACKEREL: (
+        (6, 10, 9, (MyEstate, Anywhere)),  # Holey Mackerel
+    ),
+    FishGenus.DOG_FISH: (
+        (7, 15, 1, (DonaldsDock, Anywhere)),  # Dog Fish
+        (18, 20, 6, (DonaldsDock, MyEstate)),  # Bull Dog Fish
+        (1, 5, 5, (DonaldsDock, MyEstate)),  # Hot Dog Fish
+        (3, 7, 4, (DonaldsDock, MyEstate)),  # Dalmation Dog Fish
+        (1, 2, 2, (DonaldsDock, Anywhere)),  # Puppy Dog Fish
+    ),
+    FishGenus.AMORE_EEL: (
+        (2, 6, 1, (DaisyGardens, MyEstate, Anywhere)),  # Amore Eel
+        (2, 6, 3, (DaisyGardens, MyEstate)),  # Electric Amore Eel
+    ),
+    FishGenus.NURSE_SHARK: (
+        (4, 12, 5, (MinniesMelodyland, Anywhere)),  # Nurse Shark
+        (4, 12, 7, (BaritoneBoulevard, MinniesMelodyland)),  # Clara Nurse Shark
+        (4, 12, 8, (TenorTerrace, MinniesMelodyland)),  # Florence Nurse Shark
+    ),
 
     # NOTE: Do not change the locations of the King Crab. They have been discussed in
     # marketing materials as being in these spots.
-    18: ( ( 2, 4, 3, (DonaldsDock, Anywhere) ), # King Crab
-          ( 5, 8, 7, (TheBrrrgh, ) ), # Alaskan King Crab
-          ( 4, 6, 8, (LighthouseLane, ) ), # Old King Crab
-          ),
+    FishGenus.KING_CRAB: ((2, 4, 3, (DonaldsDock, Anywhere)),  # King Crab
+                          (5, 8, 7, (TheBrrrgh,)),  # Alaskan King Crab
+                          (4, 6, 8, (LighthouseLane,)),  # Old King Crab
+                          ),
 
-    20: ( ( 4, 6, 1, (DonaldsDreamland, ) ), # Moon Fish
-          ( 14, 18, 10, (DonaldsDreamland, ) ), # Full Moon Fish
-          ( 6, 10, 8, (LullabyLane, ) ), # Half Moon Fish
-          ( 1, 1, 3, (DonaldsDreamland, ) ), # New Moon Fish
-          ( 2, 6, 6, (LullabyLane, ) ), # Crescent Moon Fish
-          ( 10, 14, 4, (DonaldsDreamland, DaisyGardens) ), # Harvest Moon Fish
-          ),
-    22: ( ( 12, 16, 2, (MyEstate, DaisyGardens, Anywhere) ), # Sea Horse
-          ( 14, 18, 3, (MyEstate, DaisyGardens, Anywhere) ), # Rocking Sea Horse
-          ( 14, 20, 5, (MyEstate, DaisyGardens) ), # Clydesdale Sea Horse
-          ( 14, 20, 7, (MyEstate, DaisyGardens) ), # Arabian Sea Horse
-          ),
-    24: ( ( 9, 11, 3, (Anywhere, ) ), # Pool Shark
-          ( 8, 12, 5, (DaisyGardens, DonaldsDock) ), # Kiddie Pool Shark
-          ( 8, 12, 6, (DaisyGardens, DonaldsDock) ), # Swimming Pool Shark
-          ( 8, 16, 7, (DaisyGardens, DonaldsDock) ), # Olympic Pool Shark
-          ),
-    26: ( ( 10, 18, 2, (TheBrrrgh, ) ), # Brown Bear Acuda
-          ( 10, 18, 3, (TheBrrrgh, ) ), # Black Bear Acuda
-          ( 10, 18, 4, (TheBrrrgh, ) ), # Koala Bear Acuda
-          ( 10, 18, 5, (TheBrrrgh, ) ), # Honey Bear Acuda
-          ( 12, 20, 6, (TheBrrrgh, ) ), # Polar Bear Acuda
-          ( 14, 20, 7, (TheBrrrgh, ) ), # Panda Bear Acuda
-          ( 14, 20, 8, (SleetStreet, TheBrrrgh) ), # Kodiac Bear Acuda
-          ( 16, 20, 10, (WalrusWay, TheBrrrgh) ), # Grizzly Bear Acuda
-          ),
-    28: ( ( 2, 10, 2, (DonaldsDock, Anywhere) ), # Cutthroat Trout
-          ( 4, 10, 6, (BarnacleBoulevard, DonaldsDock) ), # Captain Cutthroat Trout
-          ( 4, 10, 7, (SeaweedStreet, DonaldsDock) ), # Scurvy Cutthroat Trout
-          ),
-    30: ( ( 13, 17, 5, (MinniesMelodyland, Anywhere) ), # Piano Tuna
-          ( 16, 20, 10, (AltoAvenue, MinniesMelodyland) ), # Grand Piano Tuna
-          ( 12, 18, 9, (TenorTerrace, MinniesMelodyland) ), # Baby Grand Piano Tuna
-          ( 12, 18, 6, (MinniesMelodyland, ) ), # Upright Piano Tuna
-          ( 12, 18, 7, (MinniesMelodyland, ) ), # Player Piano Tuna
-          ),
-    32: ( ( 1, 5, 2, (ToontownCentral, MyEstate, Anywhere) ), # PB&J Fish
-          ( 1, 5, 3, (TheBrrrgh, MyEstate, Anywhere) ), # Grape PB&J Fish
-          ( 1, 5, 4, (DaisyGardens, MyEstate) ), # Crunchy PB&J Fish
-          ( 1, 5, 5, (DonaldsDreamland, MyEstate) ), # Strawberry PB&J Fish
-          ( 1, 5, 10, (TheBrrrgh, DonaldsDreamland) ), # Concord Grape PB&J Fish
-          ),
-    34: ( ( 1, 20, 10, (DonaldsDreamland, Anywhere) ), # Devil Ray
-          ),
-    }
+    FishGenus.MOON_FISH: (
+        (4, 6, 1, (DonaldsDreamland,)),  # Moon Fish
+        (14, 18, 10, (DonaldsDreamland,)),  # Full Moon Fish
+        (6, 10, 8, (LullabyLane,)),  # Half Moon Fish
+        (1, 1, 3, (DonaldsDreamland,)),  # New Moon Fish
+        (2, 6, 6, (LullabyLane,)),  # Crescent Moon Fish
+        (10, 14, 4, (DonaldsDreamland, DaisyGardens)),  # Harvest Moon Fish
+    ),
+    FishGenus.SEA_HORSE: (
+        (12, 16, 2, (MyEstate, DaisyGardens, Anywhere)),  # Sea Horse
+        (14, 18, 3, (MyEstate, DaisyGardens, Anywhere)),  # Rocking Sea Horse
+        (14, 20, 5, (MyEstate, DaisyGardens)),  # Clydesdale Sea Horse
+        (14, 20, 7, (MyEstate, DaisyGardens)),  # Arabian Sea Horse
+    ),
+    FishGenus.POOL_SHARK: (
+        (9, 11, 3, (Anywhere,)),  # Pool Shark
+        (8, 12, 5, (DaisyGardens, DonaldsDock)),  # Kiddie Pool Shark
+        (8, 12, 6, (DaisyGardens, DonaldsDock)),  # Swimming Pool Shark
+        (8, 16, 7, (DaisyGardens, DonaldsDock)),  # Olympic Pool Shark
+    ),
+    FishGenus.BEAR_ACUDA: (
+        (10, 18, 2, (TheBrrrgh,)),  # Brown Bear Acuda
+        (10, 18, 3, (TheBrrrgh,)),  # Black Bear Acuda
+        (10, 18, 4, (TheBrrrgh,)),  # Koala Bear Acuda
+        (10, 18, 5, (TheBrrrgh,)),  # Honey Bear Acuda
+        (12, 20, 6, (TheBrrrgh,)),  # Polar Bear Acuda
+        (14, 20, 7, (TheBrrrgh,)),  # Panda Bear Acuda
+        (14, 20, 8, (SleetStreet, TheBrrrgh)),  # Kodiac Bear Acuda
+        (16, 20, 10, (WalrusWay, TheBrrrgh)),  # Grizzly Bear Acuda
+    ),
+    FishGenus.CUTTHROAT_TROUT: (
+        (2, 10, 2, (DonaldsDock, Anywhere)),  # Cutthroat Trout
+        (4, 10, 6, (BarnacleBoulevard, DonaldsDock)),  # Captain Cutthroat Trout
+        (4, 10, 7, (SeaweedStreet, DonaldsDock)),  # Scurvy Cutthroat Trout
+    ),
+    FishGenus.PIANO_TUNA: (
+        (13, 17, 5, (MinniesMelodyland, Anywhere)),  # Piano Tuna
+        (16, 20, 10, (AltoAvenue, MinniesMelodyland)),  # Grand Piano Tuna
+        (12, 18, 9, (TenorTerrace, MinniesMelodyland)),  # Baby Grand Piano Tuna
+        (12, 18, 6, (MinniesMelodyland,)),  # Upright Piano Tuna
+        (12, 18, 7, (MinniesMelodyland,)),  # Player Piano Tuna
+    ),
+    FishGenus.PBJ_FISH: (
+        (1, 5, 2, (ToontownCentral, MyEstate, Anywhere)),  # PB&J Fish
+        (1, 5, 3, (TheBrrrgh, MyEstate, Anywhere)),  # Grape PB&J Fish
+        (1, 5, 4, (DaisyGardens, MyEstate)),  # Crunchy PB&J Fish
+        (1, 5, 5, (DonaldsDreamland, MyEstate)),  # Strawberry PB&J Fish
+        (1, 5, 10, (TheBrrrgh, DonaldsDreamland)),  # Concord Grape PB&J Fish
+    ),
+    FishGenus.DEVIL_RAY: (
+        (1, 20, 10, (DonaldsDreamland, Anywhere)),  # Devil Ray
+    ),
+}
 
 fishDict = __fishDict
 
