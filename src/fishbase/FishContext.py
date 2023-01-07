@@ -30,6 +30,7 @@ class FishContext(object):
     _CAUGHT_FISH_SESSION: int = 0  # should always be 0 in beginning of the session
     _MENU_MODE: MainMenuChoice = MainMenuChoice.NONE  # show stats or play game?
     _GAME_MODE: GameMode = GameMode.NONE  # -1 if not game
+    _SESSION_MENU: SessionMenu.NONE
 
     _IN_TUTORIAL: int = False
     _TUTORIAL_DIALOGUE_ID: int = 0

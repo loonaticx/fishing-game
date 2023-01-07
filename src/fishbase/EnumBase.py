@@ -14,6 +14,18 @@ class GameMode(IntEnum):
     FREE_PLAY = 0
     CAMPAIGN = 1
 
+class SessionMenu(IntEnum):
+    # this is to support the back button feature
+    NONE = -1
+    MAIN_MENU = 0  # pick between playing campaign
+    CAMPAIGN_MENU = 1  # in menu explaining campaign
+    TUTORIAL_MENU = 2
+    LOCATION_MENU = 3  # currently traveling somewhere
+    POND_MENU = 4  # currently in the fishing pond menu
+    SELL_MENU = 5
+    SHOP_MENU = 6
+    INVENTORY_MENU = 7
+
 
 class FishingRod(IntEnum):
     NONE = -1
