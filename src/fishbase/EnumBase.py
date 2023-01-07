@@ -58,6 +58,19 @@ class Location(IntEnum):
     OutdoorZone = 70
     MyEstate = 80
 
+class FishRarity(IntEnum):
+    COMMON_MIN = 0  # This isn't a used rarity, just to accommodate.
+    COMMON_1 = 1
+    COMMON_2 = 2
+    UNCOMMON_1 = 3
+    UNCOMMON_2 = 4
+    UNCOMMON_3 = 5
+    RARE_1 = 6
+    RARE_2 = 7
+    ULTRA_RARE_1 = 8
+    ULTRA_RARE_2 = 9
+    ULTRA_RARE_3 = 10
+    ULTRA_RARE_MAX = 11  # This isn't actually a used rarity, just to accommodate range functions.
 
 class FishGenus(IntEnum):
     NONE = -1
