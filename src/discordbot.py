@@ -159,7 +159,7 @@ class FishHereButton(discord.ui.Button['MasterView']):
 
         view.clear_items()
 
-        if len(view.context.BUCKET_CONTENTS) == 0:
+        if view.context.BUCKET_SIZE == 0:
             delta_profit = 0
         else:
             # idk
@@ -176,7 +176,7 @@ class FishHereButton(discord.ui.Button['MasterView']):
         )
 
         if view.context.USE_FISHING_BUCKET:
-            em.add_field(name = "Fishing Bucket", value = f"{len(view.context.BUCKET_CONTENTS)}/{view.context.BUCKET_SIZE_MAX}")
+            em.add_field(name = "Fishing Bucket", value = f"{view.context.BUCKET_SIZE}/{view.context.BUCKET_SIZE_MAX}")
         em.add_field(name = "Total Jellybeans", value = f"{view.context.JELLYBEANS_TOTAL}")
         if view.context.USE_FISHING_BUCKET:
             em.add_field(name = "Fishing Bucket Value", value = f"{view.context.JELLYBEANS_CURRENT}" + " (%+d)" % delta_profit)
@@ -269,7 +269,7 @@ class FishButton(discord.ui.Button['MasterView']):
         if view.context.USE_FISHING_BUCKET:
             em.add_field(
                 name = "Fishing Bucket",
-                value = f"{len(view.context.BUCKET_CONTENTS)}/{view.context.BUCKET_SIZE_MAX}"
+                value = f"{view.context.BUCKET_SIZE}/{view.context.BUCKET_SIZE_MAX}"
             )
             em.add_field(name = "Fishing Bucket Value", value = f"{view.context.JELLYBEANS_CURRENT}")
         else:
@@ -288,7 +288,7 @@ class FishButton(discord.ui.Button['MasterView']):
         em.set_thumbnail(url = f"attachment://{randomfish}")
 
         # is our bucket full now?
-        view.context.BUCKET_FULL = len(view.context.BUCKET_CONTENTS) >= view.context.BUCKET_SIZE_MAX
+        view.context.BUCKET_FULL = view.context.BUCKET_SIZE >= view.context.BUCKET_SIZE_MAX
 
         view.fish_options()
         await interaction.response.edit_message(attachments = [image, thumbnail], embed = em, view = view)
@@ -752,7 +752,7 @@ class MasterView(discord.ui.View):
             # since they are a new user, let's apply some default values:
             self.context.JELLYBEANS_TOTAL = 20  # to start them off, give them 20 jellybeans.
             # or maybe we can just give them a grace cast ^
-            self.context.BUCKET_SIZE = 20  # default bucket size
+            self.context.BUCKET_SIZE_MAX = 20  # default bucket size
             self.context.ROD_ID = FishingRod.TWIG_ROD  # beginner rod
         else:
             # nope, he's already registered with us, register the pre-existing context blob.

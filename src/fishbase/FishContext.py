@@ -136,6 +136,16 @@ class FishContext(object):
         self._ROD_ID = id
 
     @property
+    def BUCKET_SIZE(self):
+        self.BUCKET_SIZE = len(self._BUCKET_CONTENTS)
+        return self._BUCKET_SIZE
+
+    @BUCKET_SIZE.setter
+    @_sync_db
+    def BUCKET_SIZE(self, id: IntEnum):
+        self._BUCKET_SIZE = id
+
+    @property
     def BUCKET_SIZE_MAX(self):
         return self._BUCKET_SIZE_MAX
 
