@@ -22,7 +22,8 @@ class FishInternal:
 
 
 class FishContext(object):
-    # _db = None
+    # this _db variable is required. do not remove!
+    _db = None
     disid = 0
 
     _CAUGHT_FISH_SESSION: int = 0  # should always be 0 in beginning of the session
