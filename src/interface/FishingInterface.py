@@ -15,7 +15,8 @@ from rich.table import Table
 
 
 class FishingInterface():
-    def __init__(self):
+    def __init__(self, simulator=None):
+        self.simulator = simulator
         self.buildInterface()
         self.testEntry = [
             ['a', 'a', 'a', 'a'],

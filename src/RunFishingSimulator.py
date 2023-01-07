@@ -14,6 +14,7 @@ from fishbase import FishGameGlobals
 # https://pythonawesome.com/a-python-library-for-rich-text-and-beautiful-formatting-in-the-terminal/
 from fishbase.EnumBase import MainMenuChoice, GameMode
 from fishbase.FishBase import FishBase
+from gamemodes.CampaignManager import CampaignManager
 from menus.MainMenu import MainMenu
 # from simulator.FishGameSim import FishGameSim
 from menus.GameSelectionMenu import GameSelectionMenu
@@ -42,7 +43,8 @@ class RunSimulator(FishBase):
             self.refreshTitleScreen()
             self.gameModeMenu.enterMenu()
             if self.gameModeMenu.result == GameMode.CAMPAIGN:
-                # Start campaign here
+                campaignMgr = CampaignManager()
+                campaignMgr.requestCampaign()
                 pass
             elif self.gameModeMenu.result == GameMode.FREE_PLAY:
                 # Start free play here

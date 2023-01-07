@@ -1,12 +1,16 @@
 from fishbase.EnumBase import *
+from simulator.FishGameSim import FishGameSim as Simulator
 
 
 class Campaign:
     def __init__(self):
-        self.wantTutorial = 1
         context.ROD_ID = FishingRod.TWIG_ROD
         context.LOCATION_ID = Location.ToontownCentral
         context.BUCKET_SIZE_MAX = 20
+        self.simulator = Simulator(context.ROD_ID, context.LOCATION_ID)
+
+        self.wantTutorial = 1
+
 
     def enterCampaign(self):
         # You are a 15 laff toon in ttc
