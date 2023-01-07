@@ -533,24 +533,24 @@ class MasterView(discord.ui.View):
         # this would require us to change from lists to sets
         Location.NONE: [
             LocationButton(Location.TOONTOWN_CENTRAL, label = "Toontown Central"),
-            LocationButton(Location.DonaldsDock, label = "Donalds Dock")
+            LocationButton(Location.DONALDS_DOCK, label = "Donalds Dock")
         ],
         Location.TOONTOWN_CENTRAL: [
             LocationButton(Location.PUNCHLINE_PLACE, label = "Punchline Place"),
-            LocationButton(Location.LoopyLane, label = "Loopy Lane"),
-            LocationButton(Location.SillyStreet, label = "Silly Street"),
+            LocationButton(Location.LOOPY_LANE, label = "Loopy Lane"),
+            LocationButton(Location.SILLY_STREET, label = "Silly Street"),
         ],
         Location.PUNCHLINE_PLACE: [
             LocationButton(Location.TOONTOWN_CENTRAL, label = "Toontown Central"),
-            LocationButton(Location.DonaldsDock, label = "Donalds Dock"),
+            LocationButton(Location.DONALDS_DOCK, label = "Donalds Dock"),
         ],
-        Location.SillyStreet: [
+        Location.SILLY_STREET: [
             LocationButton(Location.TOONTOWN_CENTRAL, label = "Toontown Central"),
         ],
-        Location.LoopyLane: [
+        Location.LOOPY_LANE: [
             LocationButton(Location.TOONTOWN_CENTRAL, label = "Toontown Central"),
         ],
-        Location.DonaldsDock: [
+        Location.DONALDS_DOCK: [
             LocationButton(Location.PUNCHLINE_PLACE, label = "Punchline Place"),
         ],
     }
