@@ -42,14 +42,14 @@ class FishGameSim(FishGame):
 
 if __name__ == "__main__":
     rod = FishingRod.TWIG_ROD
-    location = Location.TOONTOWN_CENTRAL
+    location = Location.ToontownCentral
     numberCasts = 69
     successRatio = 1
     game = FishGameSim(rod, location, numberCasts, successRatio)
     game.calculateFishLocations(fishDict)
     # game.generateFishingReport()
     pondInfo = game.getSimplePondInfo()
-    # print(pondInfo.get(Location.TOONTOWN_CENTRAL))
-    for entry in pondInfo.get(Location.TOONTOWN_CENTRAL):
+    # print(pondInfo.get(Location.ToontownCentral))
+    for entry in pondInfo.get(Location.ToontownCentral):
         genus, species = entry
         print(FishSpeciesNames.get(genus)[species])

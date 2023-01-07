@@ -26,15 +26,15 @@ class FishingRod(IntEnum):
 
 class Location(IntEnum):
     NONE = -1
-    TOONTOWN_CENTRAL = 10
-    PUNCHLINE_PLACE = 11
-    LOOPY_LANE = 12
-    SILLY_STREET = 13
+    ToontownCentral = 10
+    PunchlinePlace = 11
+    LoopyLane = 12
+    SillyStreet = 13
 
-    DONALDS_DOCK = 20
-    BARNACLE_BOULEVARD = 21
-    SEAWEED_STREET = 22
-    LIGHTHOUSE_LANE = 23
+    DonaldsDock = 20
+    BarnacleBoulevard = 21
+    SeaweedStreet = 22
+    LighthouseLane = 23
 
     DaisyGardens = 30
     ElmStreet = 31
@@ -56,6 +56,8 @@ class Location(IntEnum):
     PajamaPlace = 62
 
     OutdoorZone = 70
+    MyEstate = 80
+
 
 class FishGenus(IntEnum):
     NONE = -1

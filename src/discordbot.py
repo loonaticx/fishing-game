@@ -100,7 +100,7 @@ class MainMenuButton(discord.ui.Button['MasterView']):
                 title = "Select street for nw",
                 description = str(f"gm = {view.context.GAME_MODE} - intended {GameMode.CAMPAIGN}"),
             )
-            view.location_options(Location.TOONTOWN_CENTRAL)
+            view.location_options(Location.ToontownCentral)
 
         await interaction.response.edit_message(embed = em, view = view, attachments=files)
 
@@ -404,7 +404,7 @@ class LocationButton(discord.ui.Button['MasterView']):
         files = []
 
         # We're arriving to a playground
-        if view.context.LOCATION_ID == Location.TOONTOWN_CENTRAL:
+        if view.context.LOCATION_ID == Location.ToontownCentral:
             # can include all possible fish you can catch here
             em = discord.Embed(
                 title = "toontown central",
@@ -532,26 +532,26 @@ class MasterView(discord.ui.View):
         # ex: loopy --> punchline
         # this would require us to change from lists to sets
         Location.NONE: [
-            LocationButton(Location.TOONTOWN_CENTRAL, label = "Toontown Central"),
-            LocationButton(Location.DONALDS_DOCK, label = "Donalds Dock")
+            LocationButton(Location.ToontownCentral, label = "Toontown Central"),
+            LocationButton(Location.DonaldsDock, label = "Donalds Dock")
         ],
-        Location.TOONTOWN_CENTRAL: [
-            LocationButton(Location.PUNCHLINE_PLACE, label = "Punchline Place"),
-            LocationButton(Location.LOOPY_LANE, label = "Loopy Lane"),
-            LocationButton(Location.SILLY_STREET, label = "Silly Street"),
+        Location.ToontownCentral: [
+            LocationButton(Location.PunchlinePlace, label = "Punchline Place"),
+            LocationButton(Location.LoopyLane, label = "Loopy Lane"),
+            LocationButton(Location.SillyStreet, label = "Silly Street"),
         ],
-        Location.PUNCHLINE_PLACE: [
-            LocationButton(Location.TOONTOWN_CENTRAL, label = "Toontown Central"),
-            LocationButton(Location.DONALDS_DOCK, label = "Donalds Dock"),
+        Location.PunchlinePlace: [
+            LocationButton(Location.ToontownCentral, label = "Toontown Central"),
+            LocationButton(Location.DonaldsDock, label = "Donalds Dock"),
         ],
-        Location.SILLY_STREET: [
-            LocationButton(Location.TOONTOWN_CENTRAL, label = "Toontown Central"),
+        Location.SillyStreet: [
+            LocationButton(Location.ToontownCentral, label = "Toontown Central"),
         ],
-        Location.LOOPY_LANE: [
-            LocationButton(Location.TOONTOWN_CENTRAL, label = "Toontown Central"),
+        Location.LoopyLane: [
+            LocationButton(Location.ToontownCentral, label = "Toontown Central"),
         ],
-        Location.DONALDS_DOCK: [
-            LocationButton(Location.PUNCHLINE_PLACE, label = "Punchline Place"),
+        Location.DonaldsDock: [
+            LocationButton(Location.PunchlinePlace, label = "Punchline Place"),
         ],
     }
 

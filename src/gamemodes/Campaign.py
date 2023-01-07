@@ -5,7 +5,7 @@ class Campaign:
     def __init__(self):
         self.wantTutorial = 1
         context.ROD_ID = FishingRod.TWIG_ROD
-        context.LOCATION_ID = Location.TOONTOWN_CENTRAL
+        context.LOCATION_ID = Location.ToontownCentral
         context.BUCKET_SIZE_MAX = 20
 
     def enterCampaign(self):

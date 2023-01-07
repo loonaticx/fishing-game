@@ -6,10 +6,10 @@ from fishbase.EnumBase import *
 # Should not get any pond info, though listing below zones should be ok
 
 # Zones
-ToontownCentral = Location.TOONTOWN_CENTRAL
-PunchlinePlace = Location.PUNCHLINE_PLACE
-LoopyLane = Location.LOOPY_LANE
-SillyStreet = Location.SILLY_STREET
+ToontownCentral = Location.ToontownCentral
+PunchlinePlace = Location.PunchlinePlace
+LoopyLane = Location.LoopyLane
+SillyStreet = Location.SillyStreet
 
 DonaldsDock = 20
 BarnacleBoulevard = 21
