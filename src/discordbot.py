@@ -310,7 +310,9 @@ class VisitFishermanButton(discord.ui.Button['MasterView']):
 
         view.context.SESSION_MENU = SessionMenu.SELL_MENU
 
-        image = discord.File(f"img/npc_freddy.png", filename = f"npc_freddy.png")
+        npcImage = f"npc_{view.context.LOCATION_ID}.png"
+
+        image = discord.File(f"img/{npcImage}", filename = f"{npcImage}")
 
         em = discord.Embed(
             title = "FISHERMAN FREDDY",
@@ -322,7 +324,7 @@ class VisitFishermanButton(discord.ui.Button['MasterView']):
             report = "%s\n" % ([name for name in [name for name, something, another in view.context.BUCKET_CONTENTS]])
             em.add_field(name="Fishing Bucket",value=report)
 
-        em.set_thumbnail(url="attachment://npc_freddy.png")
+        em.set_thumbnail(url=f"attachment://{npcImage}")
         view.fisherman_options()
         # remove empty attachment list later
         await interaction.response.edit_message(embed = em, view = view, attachments = [image])
@@ -372,18 +374,20 @@ class SellButton(discord.ui.Button['MasterView']):
 
         # sell the fish and add it to our total jellybeans
         view.context.JELLYBEANS_TOTAL += view.context.JELLYBEANS_CURRENT
+
+        image = discord.File(f"img/Jar_1.png", filename = f"Jar_1.png")
+
+        em = discord.Embed(
+            title = f"Thanks! The Pet Shop will love these!",
+            description = f"Sweet! You've earned **{view.context.JELLYBEANS_CURRENT} Jellybeans** from your bucket!",
+        )
+        em.add_field(name = "Total Jellybeans", value = f"{view.context.JELLYBEANS_TOTAL}")
+        em.set_thumbnail(url="attachment://Jar_1.png")
+
         view.context.JELLYBEANS_CURRENT = 0
         view.context.BUCKET_CONTENTS = []
         view.context.BUCKET_FULL = False
 
-        image = discord.File(f"img/npc_freddy.png", filename = f"npc_freddy.png")
-
-        em = discord.Embed(
-            title = "FISHERMAN fredye",
-            description = str(f"ayo thanks for da fish fam"),
-        )
-        em.add_field(name = "Total Jellybeans", value = f"{view.context.JELLYBEANS_TOTAL}")
-        em.set_thumbnail(url="attachment://npc_freddy.png")
         view.fisherman_options()
         # remove empty attachment list later
         await interaction.response.edit_message(embed = em, view = view, attachments = [image])
@@ -836,7 +840,7 @@ class MasterView(discord.ui.View):
         # only here to prevent a softlock, needs to be a back button instead
         self.add_item(FishHereButton())
         # self.add_item(FishingRodDropdown())
-        self.add_item(SellButton())
+        self.add_item(SellButton(disabled=self.context.BUCKET_SIZE == 0))
         # todo: disable go shopping in free play
         # self.add_item(ShopButton(label = "Go Shopping"))
         # check stats, inventory to change equipped rod
@@ -879,7 +883,7 @@ class MasterView(discord.ui.View):
 @bot.tree.command()
 async def gofish(interaction: discord.Interaction):
     files = [
-        discord.File("img/game_logo_2.png", filename = "game_logo_2.png"),
+        discord.File("img/game_logo_1.png", filename = "game_logo_1.png"),
         discord.File("img/game_bg.png", filename = "game_bg.png")
     ]
 
@@ -888,7 +892,7 @@ async def gofish(interaction: discord.Interaction):
         description = f"[Github Repository](https://github.com/loonaticx/fishing-game)",
         color = discord.Color.from_str("#49F147"),
     )
-    em.set_thumbnail(url = "attachment://game_logo_2.png")
+    em.set_thumbnail(url = "attachment://game_logo_1.png")
     em.set_image(url = "attachment://game_bg.png")
     em.add_field(name = "Bot Version", value = f"v.0.8")
     # em.add_field(name = "Github Repository", value = f"https://github.com/loonaticx/fishing-game")
