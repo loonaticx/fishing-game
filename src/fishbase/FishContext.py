@@ -1,6 +1,7 @@
 from enum import IntEnum
 # https://michaelcho.me/article/using-python-enums-in-sqlalchemy-models
 # TODO: SEPARATE CLIENT SIDED AND SERVER SIDED FISH CONTEXTS
+from fishbase.EnumBase import *
 
 
 class FishInternal:
@@ -22,25 +23,26 @@ class FishInternal:
 
 
 class FishContext(object):
-    # this _db variable is required. do not remove!
-    _db = None
-    disid = 0
+    _db = None  # this _db variable is required. do not remove!
+    disid = 0  # discord id
 
+    # session-based values
     _CAUGHT_FISH_SESSION: int = 0  # should always be 0 in beginning of the session
+    _MENU_MODE: MainMenuChoice = MainMenuChoice.NONE  # show stats or play game?
+    _GAME_MODE: GameMode = GameMode.NONE  # -1 if not game
+
     _IN_TUTORIAL: int = False
     _TUTORIAL_DIALOGUE_ID: int = 0
     _NEW_PLAYER: int = True
 
-    _MENU_MODE: IntEnum  # show stats or play game?
-    _GAME_MODE: IntEnum  # -1 if not game
     _LEVELS_UNLOCKED: int  # [0] * len(LocationData), access is LocationData Key - 1
-    _ROD_ID: int
-    _LOCATION_ID: int  # currently selected location wrt LocationData
-    _BUCKET_CONTENTS: list
-    _BUCKET_SIZE: int  # current amt of fish in your bucket
-    _BUCKET_SIZE_MAX: int  # how many fish can be held in your bucket at once
-    _JELLYBEANS_TOTAL: int  # "in bank"
-    _JELLYBEANS_CURRENT: int  # accumulated from bucket
+    _ROD_ID: FishingRod
+    _LOCATION_ID: int = Location.NONE  # currently selected location wrt LocationData
+    _BUCKET_CONTENTS: list = []
+    _BUCKET_SIZE: int = 0  # current amt of fish in your bucket
+    _BUCKET_SIZE_MAX: int = 20  # how many fish can be held in your bucket at once, default is 20
+    _JELLYBEANS_TOTAL: int = 0  # "in bank"
+    _JELLYBEANS_CURRENT: int = 0  # accumulated from bucket
     """
     # includes caught species
     # intial dict is empty
@@ -120,7 +122,7 @@ class FishContext(object):
     def JELLYBEANS_CURRENT(self):
         return self._JELLYBEANS_CURRENT
 
-    @MENU_MODE.setter
+    @JELLYBEANS_CURRENT.setter
     def JELLYBEANS_CURRENT(self, id: IntEnum):
         self._JELLYBEANS_CURRENT = id
 

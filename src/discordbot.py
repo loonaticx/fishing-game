@@ -591,14 +591,21 @@ class MasterView(discord.ui.View):
 
         # let's ensure that session-based values are their default values:
         self.context.CAUGHT_FISH_SESSION = 0
-        if not hasattr(self.context, "JELLYBEANS_TOTAL"):
-            self.context.JELLYBEANS_TOTAL = 20
+
+        # also, ensure some default values exist for us.
+        self.adjust_context_entries()
 
         # since we've modified context, might as well register the disid value into the context blob
         db.updateContext(self.user, self.context)
 
         # now that everything's ready to go, we can show the user their next options.
         self.main_menu()
+
+    def adjust_context_entries(self):
+        # if a user ends up crashing because of a missing attribute, this is a safety function
+        if not hasattr(self.context, "JELLYBEANS_TOTAL"):
+            self.context.JELLYBEANS_TOTAL = 0
+
 
     def disable_buttons(self):
         for button in self.children:
