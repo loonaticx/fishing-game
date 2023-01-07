@@ -668,23 +668,19 @@ class MasterView(discord.ui.View):
             LocationButton(Location.MapleStreet),
         ],
 
-        # todo: proper street connectors
         Location.ElmStreet: [
-            LocationButton(Location.ElmStreet),
+            LocationButton(Location.SillyStreet),
             LocationButton(Location.DaisyGardens),
 
         ],
         Location.OakStreet: [
-            LocationButton(Location.ElmStreet),
+            # SBHQ
             LocationButton(Location.DaisyGardens),
-
         ],
         Location.MapleStreet: [
-            LocationButton(Location.ElmStreet),
+            LocationButton(Location.SeaweedStreet),
             LocationButton(Location.DaisyGardens),
-
         ],
-
         Location.MinniesMelodyland: [
             LocationButton(Location.AltoAvenue),
             LocationButton(Location.BaritoneBoulevard),
@@ -692,41 +688,49 @@ class MasterView(discord.ui.View):
 
         ],
         Location.AltoAvenue: [
-            LocationButton(Location.ElmStreet),
+            LocationButton(Location.LoopyLane),
             LocationButton(Location.MinniesMelodyland),
-
         ],
         Location.TenorTerrace: [
-            LocationButton(Location.ElmStreet),
+            LocationButton(Location.LullabyLane),
             LocationButton(Location.MinniesMelodyland),
-
         ],
         Location.BaritoneBoulevard: [
-            LocationButton(Location.ElmStreet),
+            LocationButton(Location.SleetStreet),
             LocationButton(Location.MinniesMelodyland),
-
         ],
 
         Location.TheBrrrgh: [
             LocationButton(Location.WalrusWay),
             LocationButton(Location.PolarPlace),
             LocationButton(Location.SleetStreet),
-
         ],
         Location.WalrusWay: [
-            LocationButton(Location.ElmStreet),
+            LocationButton(Location.LighthouseLane),
             LocationButton(Location.TheBrrrgh),
-
         ],
         Location.PolarPlace: [
             # LBHQ
             LocationButton(Location.TheBrrrgh),
-
         ],
         Location.SleetStreet: [
-            LocationButton(Location.ElmStreet),
+            LocationButton(Location.BaritoneBoulevard),
             LocationButton(Location.TheBrrrgh),
-
+        ],
+        Location.DonaldsDreamland: [
+            LocationButton(Location.PajamaPlace),
+            LocationButton(Location.LullabyLane),
+        ],
+        Location.PajamaPlace: [
+            # CBHQ
+            LocationButton(Location.DonaldsDreamland),
+        ],
+        Location.LullabyLane: [
+            LocationButton(Location.TenorTerrace),
+            LocationButton(Location.DonaldsDreamland),
+        ],
+        Location.MyEstate: [
+            LocationButton(Location.ToontownCentral),
         ],
     }
 
