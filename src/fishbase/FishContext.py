@@ -31,26 +31,38 @@ class FishContext(object):
     _MENU_MODE: MainMenuChoice = MainMenuChoice.NONE  # show stats or play game?
     _GAME_MODE: GameMode = GameMode.NONE  # -1 if not game
     _SESSION_MENU: SessionMenu.NONE
+    _NEW_SPECIES: bool = False  # resets every cast
+    _NEW_RECORD: bool = False  # resets every cast
 
     _IN_TUTORIAL: int = False
     _TUTORIAL_DIALOGUE_ID: int = 0
     _NEW_PLAYER: int = True
 
     _LEVELS_UNLOCKED: int  # [0] * len(LocationData), access is LocationData Key - 1
-    _ROD_ID: FishingRod
+    _ROD_ID: FishingRod.TWIG_ROD
     _LOCATION_ID: int = Location.NONE  # currently selected location wrt LocationData
-    _BUCKET_CONTENTS: list = []
+
+    _BUCKET_CONTENTS: list = []  # [['Sad Clown Fish', 40, 13]] -> [caughtFish, weight, fishValue]
     _BUCKET_SIZE: int = 0  # current amt of fish in your bucket
     _BUCKET_SIZE_MAX: int = 20  # how many fish can be held in your bucket at once, default is 20
+    _BUCKET_FULL: bool = False
+
     _JELLYBEANS_TOTAL: int = 0  # "in bank"
     _JELLYBEANS_CURRENT: int = 0  # accumulated from bucket
+
+    # Cheats / Debug entries
+    _USE_FISHING_BUCKET: bool = True
+
+
+    # WARNING: keys may not be sorted in numerical order
+    _FISH_DATA = dict()
     """
     # includes caught species
     # intial dict is empty
     _FISH_DATA: dict = {
-        FISH_SPECIES1 { 
-            FISH_GENUS1: [
-                [MIN_WEIGHT: int, MAX_WEIGHT: int], [caughtrod1, caughtrod2, caughtrod3],
+        FISH_GENUS_1 { 
+            FISH_SPECIES_1: [
+                [SMALLEST_WEIGHT: int, LARGEST_WEIGHT: int], [caughtrod1, caughtrod2, caughtrod3],
                 [other personal data entries go here]
             ],
         } 
@@ -59,6 +71,9 @@ class FishContext(object):
 
     def _sync_db(func):
         """
+        Decorator to indicate that the SETTER method should call an update to the active database after setting.
+        Use this for attributes that should always be in sync with the database.
+
         static method
         """
         def wrapper(cls, id):
@@ -67,7 +82,8 @@ class FishContext(object):
 
             # post-execution operations:
             # update database entry by inserting itself
-            if FishInternal.db:
+            if FishInternal.db and hasattr(FishInternal.db, 'updateContext'):
+                # maybe do the if hasattr check here and then throw an exception that u screwed up
                 # val = eval(f'cls.{func.__name__}')  # func.__name__ returns eg MENU_MODE
                 # user = cls.db.User
                 # db.session.query(user).filter(disid).update({'context': cls}, synchronize_session = True)
@@ -94,10 +110,19 @@ class FishContext(object):
         self._GAME_MODE = id
 
     @property
+    def SESSION_MENU(self):
+        return self._SESSION_MENU
+
+    @SESSION_MENU.setter
+    def SESSION_MENU(self, id: IntEnum):
+        self._SESSION_MENU = id
+
+    @property
     def LOCATION_ID(self):
         return self._LOCATION_ID
 
     @LOCATION_ID.setter
+    # might turn into a db sync for campaign. we'll see
     def LOCATION_ID(self, id: IntEnum):
         self._LOCATION_ID = id
 
@@ -120,10 +145,23 @@ class FishContext(object):
         self._BUCKET_SIZE_MAX = id
 
     @property
+    def BUCKET_CONTENTS(self):
+        return self._BUCKET_CONTENTS
+
+    # sync the bucket contents to the db just in case the player leaves their session midway
+    @BUCKET_CONTENTS.setter
+    @_sync_db
+    def BUCKET_CONTENTS(self, contents: list):
+        self._BUCKET_CONTENTS = contents
+
+    @property
     def JELLYBEANS_CURRENT(self):
         return self._JELLYBEANS_CURRENT
 
+    # Tied to fishing bucket context
+    # might wanna rename this to like JELLYBEANS_BUCKET
     @JELLYBEANS_CURRENT.setter
+    @_sync_db
     def JELLYBEANS_CURRENT(self, id: IntEnum):
         self._JELLYBEANS_CURRENT = id
 
@@ -145,12 +183,90 @@ class FishContext(object):
         self._CAUGHT_FISH_SESSION = id
 
     @property
+    def FISH_DATA(self):
+        return self._FISH_DATA
+
+    @FISH_DATA.setter
+    @_sync_db
+    def FISH_DATA(self, newData):
+        self._FISH_DATA = newData
+
+    # since this is suppose to be a data class we should probably move this to different function so that its not saved
+    def register_fish_record(self, genus, species, weight):
+        """
+        register fish & its vitals to player's fish history, avoid short-term stuff like adding to fish bucket
+
+        FISH_DATA is only for checking if the player has ever caught such fish yet
+        """
+        genus_entry = self.FISH_DATA.get(genus)  # type: set
+        if not genus_entry:
+            # new genus, cool! let's add an entry to the db real quick
+            self.FISH_DATA[genus] = dict()
+        species_entry = self.FISH_DATA[genus].get(species)
+        if not species_entry:
+            # NEW SPECIES! Set default weights for 'em
+            # small hack for min weight upon new species:
+            species_entry = [[weight, 0]]
+            self.NEW_SPECIES = True
+        else:
+            self.NEW_SPECIES = False
+
+        # check to see if this fish's weight is a new record for either smallest or largest entry
+        minWeight, maxWeight = species_entry[0]
+        # check if there's a change in fish data for the weight records, indicating a new record:
+        self.NEW_RECORD = (minWeight > weight) or (maxWeight < weight)
+
+        species_entry[0][0] = min(minWeight, weight)
+        species_entry[0][1] = max(maxWeight, weight)
+
+        self.FISH_DATA[genus][species] = species_entry
+
+
+    @property
+    def NEW_SPECIES(self):
+        return self._NEW_SPECIES
+
+    @NEW_SPECIES.setter
+    def NEW_SPECIES(self, flag):
+        self._NEW_SPECIES = flag
+
+    @property
+    def NEW_RECORD(self):
+        return self._NEW_RECORD
+
+    @NEW_RECORD.setter
+    def NEW_RECORD(self, flag):
+        self._NEW_RECORD = flag
+
+    @property
+    def BUCKET_FULL(self):
+        # sanity check to ensure bucket is actually full:
+        if len(self._BUCKET_CONTENTS) >= self._BUCKET_SIZE_MAX:
+            self._BUCKET_FULL = True
+        else:
+            self._BUCKET_FULL = False
+        return self._BUCKET_FULL
+
+    @BUCKET_FULL.setter
+    @_sync_db
+    def BUCKET_FULL(self, flag):
+        self._BUCKET_FULL = flag
+
+    @property
     def TUTORIAL_DIALOGUE_ID(self):
         return self._TUTORIAL_DIALOGUE_ID
 
     @TUTORIAL_DIALOGUE_ID.setter
     def TUTORIAL_DIALOGUE_ID(self, id: int):
         self._TUTORIAL_DIALOGUE_ID = id
+
+    @property
+    def USE_FISHING_BUCKET(self):
+        return self._USE_FISHING_BUCKET
+
+    @USE_FISHING_BUCKET.setter
+    def USE_FISHING_BUCKET(self, flag: bool):
+        self._USE_FISHING_BUCKET = flag
 
     _sync_db = staticmethod(_sync_db)
 
