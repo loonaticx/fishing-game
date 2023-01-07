@@ -198,7 +198,7 @@ class FishButton(discord.ui.Button['MasterView']):
             label = "Bucket Full!"
             style = discord.ButtonStyle.gray
             disabled = True
-        if poor:
+        elif poor:
             label = "Not enough Jellybeans!"
             style = discord.ButtonStyle.gray
             disabled = True
@@ -356,8 +356,8 @@ class ShopButton(discord.ui.Button['MasterView']):
 
 #
 class SellButton(discord.ui.Button['MasterView']):
-    def __init__(self, label="Sell Fish", style = discord.ButtonStyle.green):
-        super().__init__(style = style, label = label)
+    def __init__(self, label="Sell Fish", style = discord.ButtonStyle.green, disabled=False):
+        super().__init__(style = style, label = label, disabled=disabled)
 
     async def callback(self, interaction: discord.Interaction):
         # TODO: make this not a copy and paste of fishermanbutton
@@ -628,11 +628,17 @@ class MasterView(discord.ui.View):
         Location.NONE: [
             LocationButton(Location.ToontownCentral),
             LocationButton(Location.DonaldsDock),
+            LocationButton(Location.DaisyGardens),
+            LocationButton(Location.MinniesMelodyland),
+            LocationButton(Location.TheBrrrgh),
+            LocationButton(Location.DonaldsDreamland),
+            LocationButton(Location.MyEstate),
         ],
         Location.ToontownCentral: [
             LocationButton(Location.PunchlinePlace),
             LocationButton(Location.LoopyLane),
             LocationButton(Location.SillyStreet),
+            LocationButton(Location.MyEstate),
         ],
         Location.PunchlinePlace: [
             LocationButton(Location.BarnacleBoulevard),
