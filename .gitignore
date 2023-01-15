@@ -1,4 +1,7 @@
-
+.idea
+.vs
+.history
+__pycache__
 *.pyc
 *.xml
 *.pb
