@@ -1,4 +1,4 @@
 discord.py
 sqlalchemy
 sqlalchemy_utils
-rich
+
