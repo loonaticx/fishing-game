@@ -55,7 +55,7 @@ class FishContext(object):
 
 
     # WARNING: keys may not be sorted in numerical order
-    _FISH_DATA = dict()
+    _FISH_DATA: dict
     """
     # includes caught species
     # intial dict is empty

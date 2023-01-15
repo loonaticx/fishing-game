@@ -859,6 +859,9 @@ class MasterView(discord.ui.View):
         if not hasattr(self.context, "BUCKET_SIZE_MAX"):
             self.context.BUCKET_SIZE_MAX = 20
 
+        if not hasattr(self.context, "FISH_DATA"):
+            self.context.FISH_DATA = dict()
+
 
     def disable_buttons(self):
         for button in self.children:
