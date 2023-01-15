@@ -23,6 +23,8 @@ from testing import fishaccess as FishSim
 #
 # ]
 # MY_GUILD = GUILDS
+from testing.fishaccess import FishSpeciesNames
+
 MY_GUILD = discord.Object(id = config.BOT_GUILD)  # replace with your guild id
 
 ALL_SERVERS = True
