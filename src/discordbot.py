@@ -354,6 +354,62 @@ class ShopButton(discord.ui.Button['MasterView']):
         # remove empty attachment list later
         await interaction.response.edit_message(embed = em, view = view, attachments = [])
 
+
+class ViewRecordsButton(discord.ui.Button['MasterView']):
+    """
+    view users fishing records
+    """
+    def __init__(self, label="View Fishing Records", style = discord.ButtonStyle.green):
+        super().__init__(style = style, label = label)
+
+    async def callback(self, interaction: discord.Interaction):
+        # the function that edits the message
+        assert self.view is not None
+        view: MasterView = self.view
+        if not view.is_host(interaction.user.id):
+            await interaction.response.send_message("Sorry, this is not your game.", ephemeral = True)
+            return
+
+        view.clear_items()
+
+        view.context.SESSION_MENU = SessionMenu.RECORDS_MENU
+
+        ##
+
+        recordDisplay = {
+
+        }
+        # shouldnt be here but just prototyping? idk
+        # build fish record for user ????? idk what i wanna do rn
+        fishDict = getFishDict()
+        for fishGenus in fishDict.keys():
+            # FishSpeciesNames[fishGenus] --> ("species_name_1", "species_name_2",) etc
+            friendly_name_genus = FishSpeciesNames[fishGenus][0]  # just take the first entry of the species tuple
+            # does player have any register of this fish genus?
+            if not view.context.FISH_DATA.get(fishGenus):
+                recordDisplay[friendly_name_genus] = ['???']
+                continue
+            else:
+                recordDisplay[friendly_name_genus] = dict()  # dict for each genus (fish type)
+
+            for fishSpecies in fishDict[fishGenus]:
+                # ok so we should have this genus if we've got here
+                # ok, what about particular fish?
+                if view.context.FISH_DATA.get(fishGenus).get(fishSpecies):
+                    recordDisplay[friendly_name_genus][fishSpecies] = [f'{FishSpeciesNames[fishGenus][fishSpecies]}']
+                else:
+                    recordDisplay[friendly_name_genus][fishSpecies] = ['???']
+
+        ##
+
+        em = discord.Embed(
+            title = "Fishing Records",
+            description = f"{recordDisplay}",
+        )
+        view.inventory_options()
+        # remove empty attachment list later
+        await interaction.response.edit_message(embed = em, view = view, attachments = [])
+
 #
 class SellButton(discord.ui.Button['MasterView']):
     def __init__(self, label="Sell Fish", style = discord.ButtonStyle.green, disabled=False):
@@ -856,6 +912,7 @@ class MasterView(discord.ui.View):
         # temp until we have a back button
         self.add_item(VisitFishermanButton(label = "Back to Fisherman"))
         self.add_item(FishingRodDropdown())
+        self.add_item(ViewRecordsButton())
 
     def shop_options(self):
         self.add_item(VisitFishermanButton(label = "See Fisherman"))

@@ -25,6 +25,7 @@ class SessionMenu(IntEnum):
     SELL_MENU = 5
     SHOP_MENU = 6
     INVENTORY_MENU = 7
+    RECORDS_MENU = 8
 
 
 class FishingRod(IntEnum):
